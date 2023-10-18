@@ -1,9 +1,10 @@
 "use client";
 
 import React from 'react'
-import styled from 'styled-components'
-import BalanceStatement from '../BalanceStatement/BalanceStatement';
-import { CardStyled, CardContainerStyled, CardFooterStyled, CardHeaderStyled, HeaderStyled, BalanceStyled } from './Card.styled'
+import { CardStyled, CardContainerStyled, CardFooterStyled, CardHeaderStyled, HeaderStyled, BalanceStyled, BalanceStatementStyled, StatementStyled, AmountStyled, TitleStyled } from './Card.styled'
+import NarrowInIcon from '@/components/Icons/ArrowDownIcon'
+import NarrowOutIcon from '@/components/Icons/ArrowUpIcon'
+
 type CardProps = {
   balance: string;
   incomeAmount: string;
@@ -19,16 +20,18 @@ const CreditCard = ({ balance, incomeAmount, expensesAmount }: CardProps) => {
               <BalanceStyled>$ { balance }</BalanceStyled>
           </CardHeaderStyled>
           <CardFooterStyled>
-            <BalanceStatement 
-              statement='in'
-              title='Income'
-              amount={incomeAmount}
-            />
-            <BalanceStatement 
-              statement='out'
-              title='Expenses'
-              amount={expensesAmount}
-            />
+            <BalanceStatementStyled>
+              <StatementStyled>
+                <NarrowInIcon/><TitleStyled>Income</TitleStyled>
+              </StatementStyled>
+              <AmountStyled>$ {incomeAmount}</AmountStyled>
+            </BalanceStatementStyled>
+            <BalanceStatementStyled>
+              <StatementStyled>
+                <NarrowOutIcon/><TitleStyled>Expenses</TitleStyled>
+              </StatementStyled>
+              <AmountStyled>$ {expensesAmount}</AmountStyled>
+            </BalanceStatementStyled>
           </CardFooterStyled>
         </CardContainerStyled>
     </CardStyled>
