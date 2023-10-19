@@ -3,7 +3,7 @@ import styled from 'styled-components'
 
 export const CardStyled = styled.div`
   height: 317px;
-  width: 516px;;
+  width: 516px;
   background-image: url('/assets/svgs/card-background.svg');
   background-repeat: no-repeat;
   border-radius: 40px;

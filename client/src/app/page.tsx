@@ -8,10 +8,12 @@ import {
   LogoutOutlined,
 } from "@ant-design/icons";
 import type { MenuProps } from "antd";
-import { Layout, Menu, theme, Button } from "antd";
-import Date from "./Components/date";
+import { Layout, Menu, theme, Button, Col, Row } from "antd";
+import Date from "@/components/Date/date";
+import TransactionHistory from "@/components/TransactionHistory/TransactionHistory";
 
-const { Header, Content, Footer, Sider } = Layout;
+
+const { Header, Content, Sider } = Layout;
 
 const items2: MenuProps["items"] = [
   {
@@ -101,27 +103,30 @@ const App: React.FC = () => {
             display: "flex",
             alignItems: "center",
             width: "100%",
-            height: "70px",
+            height: "50px",
             backgroundColor: " #4D736F",
             justifyContent:'space-between'
           }}
         >
-          <p style={{ lineHeight: "1.8rem", color: "white" }}>
+          <p style={{ lineHeight: "1.8rem", color: "white", fontSize:'1.2rem' }}>
             WELCOME EVERYONE
           </p>
           <Date/>
         </Header>
-
         
-        <Content style={{ padding: "0 24px", minHeight: 530 }}>
-          Content
+        <Content style={{ padding: "0", minHeight: 550, background: '#FFF' }}>
+          <Row>
+            <Col  style={{border:'solid 1px black', minHeight:250}} span={10}>Total Balance</Col>
+            <Col  style={{border:'solid 1px black'}} span={14}>Statistic</Col>
+          </Row>
+          <Row>
+            <Col  style={{border:'solid 1px black', minHeight:350}}  span={8}><TransactionHistory/></Col>
+            <Col  style={{border:'solid 1px black'}} span={8}>Top spending </Col>
+            <Col  style={{border:'solid 1px black'}} span={8}>Upcoming Spent</Col>
+          </Row>
         </Content>
-          
-
-        <Footer style={{   height: "50px", backgroundColor: " #4D736F", padding:'0' }}>
-          <p style={{textAlign:'center', lineHeight:'3.0rem'}}>NALT Design ©2023 Created by NALT Team</p>
-        </Footer>
       </Layout>
+      
     </Layout>
   );
 };
