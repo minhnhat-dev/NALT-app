@@ -12,28 +12,27 @@ import {
 } from '../TopSpending.styled'
 type SpendingProps = {
   id: number;
-  isSelected: boolean;
   title: string;
   date: string;
   amount: string;
   iconUrl: string;
   onSelected: Dispatch<SetStateAction<number>>
 }
-const Spending = ({ id, isSelected, title, date, amount, iconUrl, onSelected }: SpendingProps) => {
+const Spending = ({ title, date, amount, iconUrl }: SpendingProps) => {
   return (
-    <ContainerStyled onClick={() => onSelected(id)} isSelected={isSelected}>
+    <ContainerStyled>
         <InfoStyled>
           <AvatarStyled src={`/assets/images/${iconUrl}`}/>
           <DetailStyled>
-            <TitleStyled isSelected={isSelected}>
+            <TitleStyled>
               {title}
             </TitleStyled>
-            <DateStyled isSelected={isSelected}>
+            <DateStyled>
               {date}
             </DateStyled>
           </DetailStyled>
         </InfoStyled>
-      <AmountStyled isSelected={isSelected}>- ${amount}</AmountStyled>
+      <AmountStyled>- ${amount}</AmountStyled>
     </ContainerStyled>
   )
 }
