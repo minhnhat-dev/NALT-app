@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import {
   Header,
   ListContainerStyled,
@@ -40,7 +40,6 @@ const SPENDING_FAKE = [
 ];
 
 const TopSpending = () => {
-  const [idSelected, setIdSelected] = useState<number>(0);
   return (
     <TopSpendingContainerStyled>
       <Header>Top Spending<VectorSvgIcon/></Header>
@@ -48,10 +47,6 @@ const TopSpending = () => {
         {SPENDING_FAKE.map((spending) => (
           <Spending
             key={spending.id}
-            onSelected={(id) => {
-              setIdSelected(id);
-            }}
-            isSelected={idSelected === spending.id}
             {...spending}
           />
         ))}

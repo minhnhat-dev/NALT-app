@@ -1,6 +1,6 @@
 "use client"
 
-import React, { Dispatch, SetStateAction } from 'react'
+import React from 'react'
 import {
   InfoStyled, 
   AmountStyled,
@@ -16,7 +16,6 @@ type SpendingProps = {
   date: string;
   amount: string;
   iconUrl: string;
-  onSelected: Dispatch<SetStateAction<number>>
 }
 const Spending = ({ title, date, amount, iconUrl }: SpendingProps) => {
   return (
