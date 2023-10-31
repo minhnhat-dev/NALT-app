@@ -11,14 +11,14 @@ npm run dev
 
 Open [http://localhost:5000](http://localhost:5000) with your browser to see the result.
 
-## List api
+## List API
 
 ```bash
-/api/users/
+GET /api/users/
 
-/api/users/register/
+POST /api/users/register/
 
-/api/users/login/
+POST /api/users/login/
 ```
 
 ## Deploy on Render
