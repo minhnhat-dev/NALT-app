@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
-import User from "../models/User";
+import User from "./models";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 
 export async function getUsers(
   req: Request,
@@ -34,7 +35,22 @@ export async function login(req: Request, res: Response, next: NextFunction) {
     return res.status(404).json({ errors: "Not found user!" });
   }
 
-  return bcrypt.compareSync(req.body.password, user.dataValues.password)
-    ? res.status(200).json({ login: "Login success" })
-    : res.status(401).json({ login: "Login failed" });
+  const isComparePassword = bcrypt.compareSync(
+    req.body.password,
+    user.dataValues.password
+  );
+
+  if (!isComparePassword) {
+    return res.status(401).json({ login: "Login failed" });
+  }
+
+  const payload = {
+    id: user.dataValues.id,
+    username: user.dataValues.username,
+  };
+
+  const tokenAccess = jwt.sign(payload, process.env.ACCESS_KEY as string);
+  const tokenRefresh = jwt.sign(payload, process.env.REFRESH_KEY as string);
+
+  return res.status(200).json({ access: tokenAccess, refresh: tokenRefresh });
 }

@@ -1,7 +1,7 @@
-import express, { Request, Response, NextFunction } from "express";
+import express, { Request, Response, NextFunction, ErrorRequestHandler } from "express";
 import path from "path";
 import "dotenv/config";
-import usersRoutes from "./routes/users-routes";
+import usersRoutes from "./apps/users/routes";
 
 const app = express();
 const port = process.env.PORT || 5000;

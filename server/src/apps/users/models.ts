@@ -1,8 +1,8 @@
 import { DataTypes } from "sequelize";
-import db from "../database/Connect";
+import db from "../../database/Connect";
 const sequelize = db.sequelize;
 
-const User = sequelize.define("user", {
+export default sequelize.define("user", {
   id: {
     type: DataTypes.UUID,
     defaultValue: DataTypes.UUIDV4,
@@ -19,5 +19,3 @@ const User = sequelize.define("user", {
     allowNull: false,
   },
 });
-
-export default User;
