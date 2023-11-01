@@ -1,16 +1,7 @@
 import { Request, Response, NextFunction } from "express";
-import User from "./models";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-
-export async function getUsers(
-  req: Request,
-  res: Response,
-  next: NextFunction
-) {
-  const users = await User.findAll();
-  return res.status(200).json(users);
-}
+import User from "../users/models";
 
 export async function register(
   req: Request,
