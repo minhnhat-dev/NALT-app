@@ -1,10 +1,8 @@
 import { Request, Response } from "express";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import env from "../../config/env";
 import User from "../users/models";
-
-const ACCESS_KEY = process.env.ACCESS_KEY!;
-const REFRESH_KEY = process.env.REFRESH_KEY!;
 
 export async function register(req: Request, res: Response) {
   const saltRounds = 10;
@@ -20,10 +18,10 @@ export async function register(req: Request, res: Response) {
     username: user.dataValues.username,
   };
 
-  const tokenAccess = jwt.sign(payload, ACCESS_KEY, {
+  const tokenAccess = jwt.sign(payload, env.accesKey, {
     expiresIn: "1p",
   });
-  const tokenRefresh = jwt.sign(payload, REFRESH_KEY, {
+  const tokenRefresh = jwt.sign(payload, env.refeshKey, {
     expiresIn: "60p",
   });
 
@@ -57,10 +55,10 @@ export async function login(req: Request, res: Response) {
     username: user.dataValues.username,
   };
 
-  const tokenAccess = jwt.sign(payload, ACCESS_KEY, {
+  const tokenAccess = jwt.sign(payload, env.accesKey, {
     expiresIn: "1p",
   });
-  const tokenRefresh = jwt.sign(payload, REFRESH_KEY, {
+  const tokenRefresh = jwt.sign(payload, env.refeshKey, {
     expiresIn: "60p",
   });
 
