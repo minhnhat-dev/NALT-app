@@ -1,13 +1,12 @@
-import { Request, Response, NextFunction } from "express";
+import { Request, Response } from "express";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import User from "../users/models";
 
-export async function register(
-  req: Request,
-  res: Response,
-  next: NextFunction
-) {
+const ACCESS_KEY = process.env.ACCESS_KEY!;
+const REFRESH_KEY = process.env.REFRESH_KEY!;
+
+export async function register(req: Request, res: Response) {
   const saltRounds = 10;
   const hash = bcrypt.hashSync(req.body.password, saltRounds);
 
@@ -16,10 +15,28 @@ export async function register(
     password: hash,
   });
 
+  const payload = {
+    id: user.dataValues.id,
+    username: user.dataValues.username,
+  };
+
+  const tokenAccess = jwt.sign(payload, ACCESS_KEY, {
+    expiresIn: "1p",
+  });
+  const tokenRefresh = jwt.sign(payload, REFRESH_KEY, {
+    expiresIn: "60p",
+  });
+
+  res.cookie("tokenAccess", tokenAccess, { maxAge: 60 * 1000, httpOnly: true });
+  res.cookie("tokenRefresh", tokenRefresh, {
+    maxAge: 60 * 60 * 1000,
+    httpOnly: true,
+  });
+
   return res.status(201).json(user);
 }
 
-export async function login(req: Request, res: Response, next: NextFunction) {
+export async function login(req: Request, res: Response) {
   const user = await User.findOne({ where: { username: req.body.username } });
 
   if (!user) {
@@ -40,8 +57,18 @@ export async function login(req: Request, res: Response, next: NextFunction) {
     username: user.dataValues.username,
   };
 
-  const tokenAccess = jwt.sign(payload, process.env.ACCESS_KEY as string);
-  const tokenRefresh = jwt.sign(payload, process.env.REFRESH_KEY as string);
+  const tokenAccess = jwt.sign(payload, ACCESS_KEY, {
+    expiresIn: "1p",
+  });
+  const tokenRefresh = jwt.sign(payload, REFRESH_KEY, {
+    expiresIn: "60p",
+  });
+
+  res.cookie("tokenAccess", tokenAccess, { maxAge: 60 * 1000, httpOnly: true });
+  res.cookie("tokenRefresh", tokenRefresh, {
+    maxAge: 60 * 60 * 1000,
+    httpOnly: true,
+  });
 
   return res.status(200).json({ access: tokenAccess, refresh: tokenRefresh });
 }
