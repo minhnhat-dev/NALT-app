@@ -9,14 +9,16 @@ import {
 } from "@ant-design/icons";
 import type { MenuProps } from "antd";
 import { Layout, Menu, theme, Button, Col, Row } from "antd";
-import Date from "@/components/Date/date";
+import Date from "@/components/Date";
 import TransactionHistory from "@/components/Statistics/TransactionHistory/TransactionHistory";
 import UpcomingSpent from "@/components/Statistics/UpcomingSpent/UpcomingSpent";
-
+import ButtonFloat from "@/components/FloatButton";
+import Styles from "./page.module.css";
+import Card from "../components/Card";
 
 const { Header, Content, Sider } = Layout;
 
-const items2: MenuProps["items"] = [
+const itemsMenu: MenuProps["items"] = [
   {
     key: "sub1",
     icon: <HomeFilled />,
@@ -64,83 +66,47 @@ const items2: MenuProps["items"] = [
 ];
 
 const App: React.FC = () => {
-  const {
-    token: { colorBgContainer },
-  } = theme.useToken();
-
   return (
     <Layout>
-      <Sider style={{ background: colorBgContainer }} width={200}>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "flex-start",
-            alignItems: "baseline",
-            paddingLeft: "1.4rem",
-          }}
-        >
-          <span
-            style={{ fontSize: "3rem", fontWeight: "500", color: "#4D736F" }}
-          >
-            N
-          </span>
-          <span style={{ fontSize: "1.4rem" }}>ALT</span>
+      <Sider className={Styles.sider} width={220}>
+        <div className={Styles.logo}>
+          <span className={Styles.alphabet}>N</span>
+          <span className={Styles.name}>ALT</span>
         </div>
         <Menu
           mode="inline"
           defaultSelectedKeys={["0"]}
           style={{ height: "80%" }}
-          items={items2}
+          items={itemsMenu}
         />
-        <Button
-          style={{ fontSize: "1rem", color: "red", marginLeft: "2.5rem" }}
-        >
+        <Button className={Styles.button}>
           <LogoutOutlined />
           Logout
         </Button>
       </Sider>
 
       <Layout>
-        <Header
-          style={{
-            display: "flex",
-            alignItems: "center",
-            width: "100%",
-            height: "50px",
-            backgroundColor: " #4D736F",
-            justifyContent: "space-between",
-          }}
-        >
-          <p
-            style={{ lineHeight: "1.8rem", color: "white", fontSize: "1.2rem" }}
-          >
-            WELCOME EVERYONE
-          </p>
+        <Header className={Styles.header}>
+          <p className={Styles.title}>WELCOME EVERYONE</p>
           <Date />
         </Header>
 
-        <Content style={{ padding: "0", minHeight: 550, background: "#FFF" }}>
+        <Content className={Styles.content}>
           <Row>
-            <Col
-              style={{ border: "solid 1px black", minHeight: 250 }}
-              span={10}
-            >
-              Total Balance
+            <Col span={10}>
+              <Card balance="100000" expensesAmount="150000" incomeAmount="50000"/>
             </Col>
-            <Col style={{ border: "solid 1px black" }} span={14}>
-              Statistic
-            </Col>
+            <Col span={14}>Statistic</Col>
           </Row>
           <Row>
-            <Col style={{ border: "solid 1px black", minHeight: 350 }} span={8}>
-              <TransactionHistory/>
+            <Col span={8}>
+              <TransactionHistory />
             </Col>
-            <Col style={{ border: "solid 1px black" }} span={8}>
-              Top spending{" "}
+            <Col span={8}>Top spending</Col>
+            <Col span={8}>
+              <UpcomingSpent />
             </Col>
-            <Col style={{ border: "solid 1px black" }} span={8}>
-              <UpcomingSpent/>
-            </Col>
+            <ButtonFloat />
           </Row>
         </Content>
       </Layout>
