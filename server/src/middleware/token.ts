@@ -7,11 +7,9 @@ export async function verify(req: Request, res: Response, next: NextFunction) {
     return res.status(403).json({ message: "Token not found!" });
   }
 
-  const token = req.headers.authorization.split(" ")[1];
-
   try {
-    const decoded = jwt.verify(token, env.accesKey);
-    req.body.decoded = decoded;
+    const token = req.headers.authorization.split(" ")[1];
+    jwt.verify(token, env.accesKey);
     next();
   } catch (error) {
     return res.status(401).json(error);

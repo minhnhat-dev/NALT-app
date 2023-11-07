@@ -38,15 +38,44 @@ export async function login(req: Request, res: Response) {
   };
 
   const tokenAccess = jwt.sign(payload, env.accesKey, {
-    expiresIn: "14 days",
+    expiresIn: 60 * 60,
   });
 
   const tokenRefresh = jwt.sign(payload, env.refeshKey, {
-    expiresIn: "30 days",
+    expiresIn: "15 days",
   });
 
   return res.status(200).json({
     access: tokenAccess,
     refresh: tokenRefresh,
   });
+}
+
+export async function refresh(req: Request, res: Response) {
+  if (!req.headers.authorization) {
+    return res.status(403).json({ message: "Token not found!" });
+  }
+
+  try {
+    const token = req.headers.authorization.split(" ")[1];
+    const decoded = jwt.verify(token, env.refeshKey);
+    if (typeof decoded === "string") {
+      return res.status(400).json({ message: "Unable to decode token!" });
+    }
+
+    const payload = {
+      id: decoded.id,
+      username: decoded.username,
+    };
+
+    const tokenAccess = jwt.sign(payload, env.accesKey, {
+      expiresIn: 60 * 60,
+    });
+
+    return res.status(200).json({
+      access: tokenAccess,
+    });
+  } catch (error) {
+    return res.status(401).json(error);
+  }
 }
