@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import env from "../config/env";
 
-export async function verify(req: Request, res: Response, next: NextFunction) {
+export async function verifyToken(req: Request, res: Response, next: NextFunction) {
   if (!req.headers.authorization) {
     return res.status(403).json({ message: "Token not found!" });
   }
