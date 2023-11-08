@@ -116,7 +116,7 @@ const SignUp = ({ }) => {
                             SIGN UP
                         </Button>
                         <div>
-                            {changeError && !email.match(mailformat)
+                            {/* {changeError && !email.match(mailformat)
                                 ? <Paragraph style={{ color: "red", height: 22 }}>
                                     Please Enter Email
                                 </Paragraph> : <Paragraph style={{ height: 22 }} />}
@@ -125,7 +125,16 @@ const SignUp = ({ }) => {
                             {confirmPassword !== password
                                 ? <Paragraph style={{ color: "red", height: 22 }}>
                                     Confirm Password does not match Password
-                                </Paragraph> : <Paragraph style={{ height: 22 }} />}
+                                </Paragraph> : <Paragraph style={{ height: 22 }} />} */}
+
+                            {changeError && !email.match(mailformat)
+                                ? <Paragraph style={{ color: "red", height: 22 }}>
+                                    Please Enter Email
+                                </Paragraph> : confirmPassword !== password 
+                                ?  <Paragraph style={{ color: "red", height: 22 }}>
+                                Confirm Password does not match Password
+                            </Paragraph> : <Paragraph style={{ height: 22 }} /> }
+
                         </div>
                     </Space>
                 </Col>
