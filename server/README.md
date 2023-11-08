@@ -1,7 +1,5 @@
 # Welcome to the NALT Server
 
-![Cat work](https://i.pinimg.com/originals/42/0e/39/420e39bd34d74ffae5c6af92a701d5cb.gif)
-
 ## Getting Started
 
 ```bash

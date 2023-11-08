@@ -3,6 +3,30 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import env from "../../config/env";
 import User from "../users/models";
+import constants from "./constants";
+
+export async function me(req: Request, res: Response) {
+  if (!req.headers.authorization) {
+    return res.status(401).json({ error: "Unauthorized!" });
+  }
+
+  try {
+    const token = req.headers.authorization.split(" ")[1];
+    const decoded = jwt.verify(token, env.accesKey) as jwt.JwtPayload;
+
+    const user = {
+      id: decoded.id,
+      email: decoded.email,
+      name: decoded.name,
+    };
+
+    return res.status(200).json({
+      user: user,
+    });
+  } catch (error) {
+    return res.status(401).json(error);
+  }
+}
 
 export async function signup(req: Request, res: Response) {
   const { name, email, password } = req.body;
@@ -12,9 +36,7 @@ export async function signup(req: Request, res: Response) {
   }
 
   try {
-    const saltRounds = 10;
-    const hash = bcrypt.hashSync(password, saltRounds);
-
+    const hash = bcrypt.hashSync(password, constants.SALT_ROUNDS);
     const user = await User.create({
       name: name,
       email: email,
@@ -23,7 +45,7 @@ export async function signup(req: Request, res: Response) {
 
     return res.status(201).json(user);
   } catch (error) {
-    return res.status(400).json(error);
+    return res.status(500).json(error);
   }
 }
 
@@ -48,6 +70,7 @@ export async function signin(req: Request, res: Response) {
   const payload = {
     id: user.dataValues.id,
     email: user.dataValues.email,
+    name: user.dataValues.name,
   };
 
   const tokenAccess = jwt.sign(payload, env.accesKey, {
@@ -66,19 +89,17 @@ export async function signin(req: Request, res: Response) {
 
 export async function refresh(req: Request, res: Response) {
   if (!req.headers.authorization) {
-    return res.status(403).json({ error: "Token not found!" });
+    return res.status(401).json({ error: "Unauthorized!" });
   }
 
   try {
     const token = req.headers.authorization.split(" ")[1];
-    const decoded = jwt.verify(token, env.refeshKey);
-    if (typeof decoded === "string") {
-      return res.status(400).json({ error: "Unable to decode token!" });
-    }
+    const decoded = jwt.verify(token, env.refeshKey) as jwt.JwtPayload;
 
     const payload = {
       id: decoded.id,
-      username: decoded.username,
+      email: decoded.email,
+      name: decoded.name,
     };
 
     const tokenAccess = jwt.sign(payload, env.accesKey, {
