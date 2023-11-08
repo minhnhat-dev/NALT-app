@@ -43,11 +43,10 @@
 
 .content {
   padding: 0;
-  min-height: 550;
+  /* min-height: 550; */
   background: #FFF;
 }
 
 .colBalance {
   border: solid 1px black; 
-  
 }
