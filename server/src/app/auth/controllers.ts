@@ -4,37 +4,50 @@ import jwt from "jsonwebtoken";
 import env from "../../config/env";
 import User from "../users/models";
 
-export async function register(req: Request, res: Response) {
-  const saltRounds = 10;
-  const hash = bcrypt.hashSync(req.body.password, saltRounds);
+export async function signup(req: Request, res: Response) {
+  const { name, email, password } = req.body;
 
-  const user = await User.create({
-    username: req.body.username,
-    password: hash,
-  });
-
-  return res.status(201).json(user);
-}
-
-export async function login(req: Request, res: Response) {
-  const user = await User.findOne({ where: { username: req.body.username } });
-
-  if (!user) {
-    return res.status(404).json({ message: "Not found user!" });
+  if (!email || !password) {
+    return res.status(409).json({ error: "Email and password not empty!" });
   }
 
-  const isCompare = bcrypt.compareSync(
-    req.body.password,
-    user.dataValues.password
-  );
+  try {
+    const saltRounds = 10;
+    const hash = bcrypt.hashSync(password, saltRounds);
+
+    const user = await User.create({
+      name: name,
+      email: email,
+      password: hash,
+    });
+
+    return res.status(201).json(user);
+  } catch (error) {
+    return res.status(400).json(error);
+  }
+}
+
+export async function signin(req: Request, res: Response) {
+  const { email, password } = req.body;
+  if (!email || !password) {
+    return res.status(409).json({ error: "Email and password not empty!" });
+  }
+
+  const user = await User.findOne({ where: { email: email } });
+
+  if (!user) {
+    return res.status(404).json({ error: "Not found user!" });
+  }
+
+  const isCompare = bcrypt.compareSync(password, user.dataValues.password);
 
   if (!isCompare) {
-    return res.status(401).json({ message: "Login failed!" });
+    return res.status(401).json({ error: "Login failed!" });
   }
 
   const payload = {
     id: user.dataValues.id,
-    username: user.dataValues.username,
+    email: user.dataValues.email,
   };
 
   const tokenAccess = jwt.sign(payload, env.accesKey, {
@@ -53,14 +66,14 @@ export async function login(req: Request, res: Response) {
 
 export async function refresh(req: Request, res: Response) {
   if (!req.headers.authorization) {
-    return res.status(403).json({ message: "Token not found!" });
+    return res.status(403).json({ error: "Token not found!" });
   }
 
   try {
     const token = req.headers.authorization.split(" ")[1];
     const decoded = jwt.verify(token, env.refeshKey);
     if (typeof decoded === "string") {
-      return res.status(400).json({ message: "Unable to decode token!" });
+      return res.status(400).json({ error: "Unable to decode token!" });
     }
 
     const payload = {
