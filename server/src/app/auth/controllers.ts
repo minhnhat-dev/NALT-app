@@ -42,7 +42,7 @@ export async function signin(req: Request, res: Response) {
   const isCompare = bcrypt.compareSync(password, user.dataValues.password);
 
   if (!isCompare) {
-    return res.status(401).json({ error: "Login failed!" });
+    return res.status(401).json({ error: "Password incorrect!" });
   }
 
   const payload = {
