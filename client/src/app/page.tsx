@@ -10,7 +10,8 @@ import {
 import type { MenuProps } from "antd";
 import { Layout, Menu, theme, Button, Col, Row } from "antd";
 import Date from "@/components/Date/date";
-import TransactionHistory from "@/components/TransactionHistory/TransactionHistory";
+import TransactionHistory from "@/components/Statistics/TransactionHistory/TransactionHistory";
+import UpcomingSpent from "@/components/Statistics/UpcomingSpent/UpcomingSpent";
 
 
 const { Header, Content, Sider } = Layout;
@@ -69,7 +70,7 @@ const App: React.FC = () => {
 
   return (
     <Layout>
-      <Sider style={{ background: colorBgContainer }} width={200} >
+      <Sider style={{ background: colorBgContainer }} width={200}>
         <div
           style={{
             display: "flex",
@@ -91,7 +92,9 @@ const App: React.FC = () => {
           style={{ height: "80%" }}
           items={items2}
         />
-        <Button style={{fontSize:'1rem', color:'red', marginLeft:'2.5rem'}}>
+        <Button
+          style={{ fontSize: "1rem", color: "red", marginLeft: "2.5rem" }}
+        >
           <LogoutOutlined />
           Logout
         </Button>
@@ -105,28 +108,42 @@ const App: React.FC = () => {
             width: "100%",
             height: "50px",
             backgroundColor: " #4D736F",
-            justifyContent:'space-between'
+            justifyContent: "space-between",
           }}
         >
-          <p style={{ lineHeight: "1.8rem", color: "white", fontSize:'1.2rem' }}>
+          <p
+            style={{ lineHeight: "1.8rem", color: "white", fontSize: "1.2rem" }}
+          >
             WELCOME EVERYONE
           </p>
-          <Date/>
+          <Date />
         </Header>
-        
-        <Content style={{ padding: "0", minHeight: 550, background: '#FFF' }}>
+
+        <Content style={{ padding: "0", minHeight: 550, background: "#FFF" }}>
           <Row>
-            <Col  style={{border:'solid 1px black', minHeight:250}} span={10}>Total Balance</Col>
-            <Col  style={{border:'solid 1px black'}} span={14}>Statistic</Col>
+            <Col
+              style={{ border: "solid 1px black", minHeight: 250 }}
+              span={10}
+            >
+              Total Balance
+            </Col>
+            <Col style={{ border: "solid 1px black" }} span={14}>
+              Statistic
+            </Col>
           </Row>
           <Row>
-            <Col  style={{border:'solid 1px black', minHeight:350}}  span={8}><TransactionHistory/></Col>
-            <Col  style={{border:'solid 1px black'}} span={8}>Top spending </Col>
-            <Col  style={{border:'solid 1px black'}} span={8}>Upcoming Spent</Col>
+            <Col style={{ border: "solid 1px black", minHeight: 350 }} span={8}>
+              <TransactionHistory/>
+            </Col>
+            <Col style={{ border: "solid 1px black" }} span={8}>
+              Top spending{" "}
+            </Col>
+            <Col style={{ border: "solid 1px black" }} span={8}>
+              <UpcomingSpent/>
+            </Col>
           </Row>
         </Content>
       </Layout>
-      
     </Layout>
   );
 };
