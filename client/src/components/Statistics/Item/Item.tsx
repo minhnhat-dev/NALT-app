@@ -22,16 +22,14 @@ type ItemProps = {
 };
 
 const Item = ({ image, name, day, value, isNegative }: ItemProps) => {
-
   const handleValue = () => {
     let USDollar = new Intl.NumberFormat("en-US", {
       style: "currency",
       currency: "USD",
-      
     });
-    return USDollar.format(value)
+    return USDollar.format(value);
   };
-
+  
   return (
     <ItemList>
       <ItemStyled>

@@ -1,12 +1,10 @@
 import styled from "styled-components";
 
-export const ItemList = styled.li`
-  
-`;
+export const ItemList = styled.li``
 
 export const ItemStyled = styled.span`
   display: flex;
-  justify-content: space-around;
+  justify-content: space-between;
   align-items: center;
 `;
 export const ItemInfo = styled.span`
@@ -22,7 +20,7 @@ display:flex;
 flex-direction: column;
 justify-content: center;
 row-gap: 5px;
-`
+`;
 export const ItemName = styled.span`
   font-size: 16px;
   font-weight: 500;
