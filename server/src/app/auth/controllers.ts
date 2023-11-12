@@ -1,9 +1,10 @@
 import { Request, Response } from "express";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import env from "../../config/env";
-import User from "../users/models";
 import constants from "./constants";
+import User from "../users/models";
+import env from "../../config/env";
+import checkUser from "../../validators/checkUser";
 
 export async function me(req: Request, res: Response) {
   if (!req.headers.authorization) {
@@ -30,20 +31,17 @@ export async function me(req: Request, res: Response) {
 
 export async function signup(req: Request, res: Response) {
   const { name, email, password } = req.body;
-
-  if (!email || !password) {
-    return res.status(409).json({ error: "Email and password not empty!" });
-  }
-
   try {
+    await checkUser(email, password, name);
     const hash = bcrypt.hashSync(password, constants.SALT_ROUNDS);
-    const user = await User.create({
+
+    await User.create({
       name: name,
       email: email,
       password: hash,
     });
 
-    return res.status(201).json(user);
+    return res.status(201).json({ message: "Signup successful" });
   } catch (error) {
     return res.status(500).json(error);
   }
@@ -51,8 +49,11 @@ export async function signup(req: Request, res: Response) {
 
 export async function signin(req: Request, res: Response) {
   const { email, password } = req.body;
-  if (!email || !password) {
-    return res.status(409).json({ error: "Email and password not empty!" });
+
+  try {
+    await checkUser(email, password);
+  } catch (error) {
+    return res.status(400).json(error);
   }
 
   const user = await User.findOne({ where: { email: email } });

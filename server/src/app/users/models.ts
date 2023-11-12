@@ -28,6 +28,6 @@ export default sequelize.define(
     },
   },
   {
-    tableName: "User",
+    tableName: "Users",
   }
 );

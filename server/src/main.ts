@@ -3,8 +3,7 @@ import path from "path";
 import "dotenv/config";
 import env from "./config/env";
 import cors from "cors";
-import { checkEnv } from "./validation/env";
-
+import checkEnv from "./validators/checkEnv";
 import users from "./app/users/routes";
 import auth from "./app/auth/routes";
 
@@ -12,9 +11,11 @@ checkEnv();
 
 const app = express();
 
-app.use(cors({
-  origin: "http://localhost:3000"
-}));
+app.use(
+  cors({
+    origin: "http://localhost:3000",
+  })
+);
 app.use(express.json());
 app.use(
   express.urlencoded({
