@@ -34,19 +34,21 @@ const Login = ({ }) => {
     <Layout className={Styles.wrapper}>
       <Row className={Styles.row}>
         <Col span={9} className={Styles.col9}>
-          <img src="./assets/svgs/logo.svg" className={Styles.img}/>
+          <img src="./assets/svgs/logo.svg" className={Styles.img} />
           <Space direction="vertical" size="large">
             <Typography>
               <Title>Hello, Friends</Title>
               <Paragraph className={Styles.description}>
                 Enter your personal details and strat journy with us
               </Paragraph>
+
               <Button
                 className={Styles.button}
                 onClick={handleRegister}
               >
                 SIGN UP
               </Button>
+
             </Typography>
           </Space>
         </Col>

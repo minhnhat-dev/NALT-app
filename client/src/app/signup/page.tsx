@@ -1,5 +1,8 @@
 "use client";
 import React, { useState } from "react";
+import Link from "next/link";
+import { redirect } from "next/navigation";
+import axios from "axios";
 import { Layout, Col, Row, Input, Space, Typography, Button } from "antd";
 import { MailOutlined, LockOutlined, UserOutlined } from "@ant-design/icons";
 import Styles from "./signup.module.css"
@@ -11,11 +14,24 @@ const SignUp = ({ }) => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
-
-
     const [changeError, setChangeError] = useState(false)
 
-    const handleSignUp = () => {
+    const handleSignUp = async () => {
+        try {
+            const reponse = await axios({
+                method: "post",
+                url: "https://nalt-server-test.onrender.com/api/auth/signup",
+                data: {
+                    name: username,
+                    email: email,
+                    password: password
+                }
+            })
+            //redirect('/login')
+            //console.log(reponse.status)
+        } catch (error) {
+            console.log(error)
+        }
         setUsername(prev => {
             return prev + username
         })
@@ -34,11 +50,12 @@ const SignUp = ({ }) => {
         setUsername("")
         setConfirmPassword("")
         setChangeError(false)
-        console.log({ 'user :': username, 'email :': email, 'password :': password, 'confirmPassword :': confirmPassword })
+        // console.log({ 'user :': username, 'email :': email, 'password :': password, 'confirmPassword :': confirmPassword })
     }
 
+
     const handleSignIn = () => {
-        alert("Hello, Coming Soon")
+       
     }
 
     const mailformat = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
@@ -55,12 +72,15 @@ const SignUp = ({ }) => {
                                 To keep connected with us please
                                 login with your personal info
                             </Paragraph>
-                            <Button
-                                className={Styles.button}
-                                onClick={handleSignIn}
-                            >
-                                SIGN IN
-                            </Button>
+                            <Link
+                                href={"/login"}>
+                                <Button
+                                    className={Styles.button}
+                                    onClick={handleSignIn}
+                                >
+                                    SIGN IN
+                                </Button>
+                            </Link>
                         </Typography>
                     </Space>
                 </Col>
@@ -116,25 +136,13 @@ const SignUp = ({ }) => {
                             SIGN UP
                         </Button>
                         <div>
-                            {/* {changeError && !email.match(mailformat)
-                                ? <Paragraph style={{ color: "red", height: 22 }}>
-                                    Please Enter Email
-                                </Paragraph> : <Paragraph style={{ height: 22 }} />}
-
-
-                            {confirmPassword !== password
-                                ? <Paragraph style={{ color: "red", height: 22 }}>
-                                    Confirm Password does not match Password
-                                </Paragraph> : <Paragraph style={{ height: 22 }} />} */}
-
                             {changeError && !email.match(mailformat)
                                 ? <Paragraph style={{ color: "red", height: 22 }}>
                                     Please Enter Email
-                                </Paragraph> : confirmPassword !== password 
-                                ?  <Paragraph style={{ color: "red", height: 22 }}>
-                                Confirm Password does not match Password
-                            </Paragraph> : <Paragraph style={{ height: 22 }} /> }
-
+                                </Paragraph> : confirmPassword !== password
+                                    ? <Paragraph style={{ color: "red", height: 22 }}>
+                                        Confirm Password does not match Password
+                                    </Paragraph> : <Paragraph style={{ height: 22 }} />}
                         </div>
                     </Space>
                 </Col>
