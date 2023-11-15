@@ -4,7 +4,7 @@ import jwt from "jsonwebtoken";
 import constants from "./constants";
 import User from "../users/models";
 import env from "../../config/env";
-import checkUser from "../../validators/checkUser";
+import checkUser from "../../validators/checkSignup";
 
 export async function me(req: Request, res: Response) {
   if (!req.headers.authorization) {
@@ -33,8 +33,14 @@ export async function signup(req: Request, res: Response) {
   const { name, email, password } = req.body;
   try {
     await checkUser(email, password, name);
-    const hash = bcrypt.hashSync(password, constants.SALT_ROUNDS);
+  } catch (error: any) {
+    return res
+      .status(400)
+      .json(error.map((item: any) => ({ [item.property]: item.constraints })));
+  }
 
+  try {
+    const hash = bcrypt.hashSync(password, constants.SALT_ROUNDS);
     await User.create({
       name: name,
       email: email,
@@ -42,8 +48,10 @@ export async function signup(req: Request, res: Response) {
     });
 
     return res.status(201).json({ message: "Signup successful" });
-  } catch (error) {
-    return res.status(500).json(error);
+  } catch (error: any) {
+    return res
+      .status(400)
+      .json(error.errors.map((item: any) => ({ [item.path]: item.message })));
   }
 }
 
