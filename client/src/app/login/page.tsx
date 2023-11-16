@@ -1,39 +1,71 @@
 "use client";
-import React, { useState } from "react";
-import { Layout, Col, Row, Input, Space, Typography, Button } from "antd";
-import { UserOutlined, KeyOutlined } from "@ant-design/icons";
-import Styles from "./login.module.css"
+import { KeyOutlined, UserOutlined } from "@ant-design/icons";
+import {
+  Button,
+  Col,
+  Input,
+  Layout,
+  Row,
+  Space,
+  Typography,
+  notification,
+} from "antd";
+import axios, { AxiosError } from "axios";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import Styles from "./login.module.css";
 
-const { Title, Paragraph } = Typography
+const { Title, Paragraph } = Typography;
 
-const Login = ({ }) => {
+const Login = ({}) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [changeError, setChangeError] = useState(false)
+  const [changeError, setChangeError] = useState(false);
+  const [api, contextHolder] = notification.useNotification();
+  const router = useRouter();
 
-  const handleSignIn = () => {
-    setEmail(prev => {
-      return prev + email
-    })
-    setPassword(prev => {
-      return prev + password
-    })
-    setEmail("")
-    setPassword("")
-    setChangeError(false)
-    console.log({ 'email :': email, 'password :': password })
-  }
+  const handleSignIn = async () => {
+    try {
+      const reponse = await axios({
+        method: "post",
+        url: "https://nalt-server-test.onrender.com/api/auth/signin",
+        data: {
+          email: email,
+          password: password,
+        },
+      });
+      router.replace("/");
+      console.log(reponse.status);
+    } catch (error) {
+      api.info({
+        message: "ERROR",
+        description: (error as AxiosError).message,
+        placement: "top",
+      });
+    }
+
+    setEmail((prev) => {
+      return prev + email;
+    });
+    setPassword((prev) => {
+      return prev + password;
+    });
+    setEmail("");
+    setPassword("");
+    setChangeError(false);
+  };
 
   const handleRegister = () => {
-    alert("Hello, Coming Soon")
-  }
-    // const mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-    const mailformat = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+    alert("Hello, Coming Soon");
+  };
+
+  const mailformat =
+    /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
 
   return (
     <Layout className={Styles.wrapper}>
       <Row className={Styles.row}>
-        <Col span={9} className={Styles.col9} >
+        <Col span={9} className={Styles.col9}>
           <Space direction="vertical" size="large">
             <Typography>
               <Title>Hello, Friends</Title>
@@ -42,20 +74,15 @@ const Login = ({ }) => {
                 Enter your personal details and strat journy with us
               </Paragraph>
 
-              <Button
-                className={Styles.button}
-                onClick={handleRegister}
-              >
+              <Button className={Styles.button} onClick={handleRegister}>
                 SIGN UP
               </Button>
-
             </Typography>
           </Space>
         </Col>
 
         <Col span={15} className={Styles.col15}>
           <Space direction="vertical" size="large">
-
             <Typography>
               <Title className={Styles.title}>Sign in to Nalt</Title>
             </Typography>
@@ -69,7 +96,9 @@ const Login = ({ }) => {
               style={{ width: "500px" }}
               allowClear
               value={email}
-              onChange={e => {setEmail(e.target.value) , setChangeError(true)}}
+              onChange={(e) => {
+                setEmail(e.target.value), setChangeError(true);
+              }}
             />
 
             <Input.Password
@@ -80,7 +109,7 @@ const Login = ({ }) => {
               style={{ width: "500px" }}
               allowClear
               value={password}
-              onChange={e => setPassword(e.target.value)}
+              onChange={(e) => setPassword(e.target.value)}
             />
             <Button
               disabled={email && password ? false : true}
@@ -90,10 +119,20 @@ const Login = ({ }) => {
               SIGN IN
             </Button>
 
+            <div>
+              {changeError && !email.match(mailformat) ? (
+                <Paragraph style={{ color: "red", height: 22 }}>
+                  Please Enter Email
+                </Paragraph>
+              ) : (
+                <Paragraph style={{ height: 22 }} />
+              )}
+            </div>
+            {contextHolder}
           </Space>
         </Col>
       </Row>
-    </Layout >
+    </Layout>
   );
 };
 export default Login;
