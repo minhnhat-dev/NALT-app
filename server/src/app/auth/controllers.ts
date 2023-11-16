@@ -66,7 +66,7 @@ export async function signin(req: Request, res: Response) {
 
   const user = await User.findOne({ where: { email: email } });
   if (!user) {
-    return res.status(404).json({ error: "Not found user!" });
+    return res.status(401).json({ error: "Not found user!" });
   }
 
   const isCompare = bcrypt.compareSync(password, user.dataValues.password);
