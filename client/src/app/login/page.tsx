@@ -1,34 +1,68 @@
 "use client";
 import React, { useState } from "react";
-import { Layout, Col, Row, Input, Space, Typography, Button } from "antd";
+import {
+  Layout,
+  Col,
+  Row,
+  Input,
+  Space,
+  Typography,
+  Button,
+  notification,
+} from "antd";
 import { MailOutlined, LockOutlined } from "@ant-design/icons";
-import Styles from "./login.module.css"
+import Styles from "./login.module.css";
+import axios, { AxiosError } from "axios";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 
-const { Title, Paragraph } = Typography
+const { Title, Paragraph } = Typography;
 
-const Login = ({ }) => {
+const Login = ({}) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [changeError, setChangeError] = useState(false)
+  const [changeError, setChangeError] = useState(false);
+  const router = useRouter();
+  const [api, contextHolder] = notification.useNotification();
 
-  const handleSignIn = () => {
-    setEmail(prev => {
-      return prev + email
-    })
-    setPassword(prev => {
-      return prev + password
-    })
-    setEmail("")
-    setPassword("")
-    setChangeError(false)
-    console.log({ 'email :': email, 'password :': password })
-  }
+  const handleSignIn = async () => {
+    try {
+      const reponse = await axios({
+        method: "post",
+        url: "https://nalt-server-test.onrender.com/api/auth/signin",
+        data: {
+          email: email,
+          password: password,
+        },
+      });
+      router.replace("/");
+      console.log(reponse.status);
+    } catch (error) {
+      console.log(error);
+      api.info({
+        message: "ERROR",
+        description: (error as AxiosError).message,
+        placement: "top",
+      });
+    }
 
-  const handleRegister = () => {
-    alert("Hello, Coming Soon")
-  }
+    setEmail((prev) => {
+      return prev + email;
+    });
+    setPassword((prev) => {
+      return prev + password;
+    });
+    setEmail("");
+    setPassword("");
+    setChangeError(false);
+  };
 
-  const mailformat = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+  // const handleRegister = () => {
+  //   router.replace('/signup')
+  // }
+
+  const mailformat =
+    /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
 
   return (
     <Layout className={Styles.wrapper}>
@@ -41,14 +75,11 @@ const Login = ({ }) => {
               <Paragraph className={Styles.description}>
                 Enter your personal details and strat journy with us
               </Paragraph>
-
-              <Button
-                className={Styles.button}
-                onClick={handleRegister}
-              >
-                SIGN UP
-              </Button>
-
+              <Link href={'/signup'}>
+                <Button className={Styles.button}>
+                  SIGN UP
+                </Button>
+              </Link>
             </Typography>
           </Space>
         </Col>
@@ -66,7 +97,9 @@ const Login = ({ }) => {
               prefix={<MailOutlined />}
               style={{ width: "500px" }}
               value={email}
-              onChange={e => { setEmail(e.target.value), setChangeError(true) }}
+              onChange={(e) => {
+                setEmail(e.target.value), setChangeError(true);
+              }}
             />
             <Input.Password
               size="large"
@@ -75,7 +108,7 @@ const Login = ({ }) => {
               prefix={<LockOutlined />}
               style={{ width: "500px" }}
               value={password}
-              onChange={e => setPassword(e.target.value)}
+              onChange={(e) => setPassword(e.target.value)}
             />
             <Button
               disabled={email && password ? false : true}
@@ -85,16 +118,19 @@ const Login = ({ }) => {
               SIGN IN
             </Button>
             <div>
-              {changeError && !email.match(mailformat)
-                ? <Paragraph style={{ color: "red", height: 22 }}>
+              {changeError && !email.match(mailformat) ? (
+                <Paragraph style={{ color: "red", height: 22 }}>
                   Please Enter Email
                 </Paragraph>
-                : <Paragraph style={{ height: 22 }} />}
+              ) : (
+                <Paragraph style={{ height: 22 }} />
+              )}
             </div>
+            {contextHolder}
           </Space>
         </Col>
       </Row>
-    </Layout >
+    </Layout>
   );
 };
 export default Login;
