@@ -46,7 +46,6 @@ export async function signup(req: Request, res: Response) {
       email: email,
       password: hash,
     });
-
     return res.status(201).json({ message: "Signup successful" });
   } catch (error: any) {
     return res
@@ -57,21 +56,20 @@ export async function signup(req: Request, res: Response) {
 
 export async function signin(req: Request, res: Response) {
   const { email, password } = req.body;
-
   try {
     await checkUser(email, password);
-  } catch (error) {
-    return res.status(400).json(error);
+  } catch (error:any) {
+    return res
+      .status(400)
+      .json(error.map((item: any) => ({ [item.property]: item.constraints })));
   }
 
   const user = await User.findOne({ where: { email: email } });
-
   if (!user) {
     return res.status(404).json({ error: "Not found user!" });
   }
 
   const isCompare = bcrypt.compareSync(password, user.dataValues.password);
-
   if (!isCompare) {
     return res.status(401).json({ error: "Password incorrect!" });
   }
@@ -81,11 +79,9 @@ export async function signin(req: Request, res: Response) {
     email: user.dataValues.email,
     name: user.dataValues.name,
   };
-
   const tokenAccess = jwt.sign(payload, env.accesKey, {
     expiresIn: 60 * 60,
   });
-
   const tokenRefresh = jwt.sign(payload, env.refeshKey, {
     expiresIn: "15 days",
   });
