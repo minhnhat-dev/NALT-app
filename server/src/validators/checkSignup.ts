@@ -1,36 +1,27 @@
 import {
   IsEmail,
+  IsNotEmpty,
   IsStrongPassword,
-  IsString,
+  IsOptional,
   validateOrReject,
 } from "class-validator";
 
 class User {
+  @IsNotEmpty()
   @IsEmail()
-  private email: string;
+  email: string;
 
+  @IsNotEmpty()
   @IsStrongPassword()
-  private password: string;
+  password: string;
 
-  @IsString()
-  private name: string;
+  @IsOptional()
+  name: string;
 
   constructor(email: string, password: string, name: string) {
     this.email = email;
     this.password = password;
     this.name = name;
-  }
-
-  public get getEmail(): string {
-    return this.email;
-  }
-
-  public get getPassword(): string {
-    return this.password;
-  }
-
-  public get getName(): string {
-    return this.name;
   }
 }
 
@@ -38,10 +29,9 @@ export default async function (
   email: string,
   password: string,
   name: string = ""
-): Promise<User> {
-  const user = new User(email, password, name);
-
+) {
   try {
+    const user = new User(email, password, name);
     await validateOrReject(user);
     return user;
   } catch (error) {

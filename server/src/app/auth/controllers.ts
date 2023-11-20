@@ -31,15 +31,9 @@ export async function me(req: Request, res: Response) {
 
 export async function signup(req: Request, res: Response) {
   const { name, email, password } = req.body;
-  try {
-    await checkUser(email, password, name);
-  } catch (error: any) {
-    return res
-      .status(400)
-      .json(error.map((item: any) => ({ [item.property]: item.constraints })));
-  }
 
   try {
+    await checkUser(email, password, name);
     const hash = bcrypt.hashSync(password, constants.SALT_ROUNDS);
     await User.create({
       name: name,
@@ -47,10 +41,18 @@ export async function signup(req: Request, res: Response) {
       password: hash,
     });
     return res.status(201).json({ message: "Signup successful" });
-  } catch (error: any) {
-    return res
-      .status(400)
-      .json(error.errors.map((item: any) => ({ [item.path]: item.message })));
+  } catch (errors: any) {
+    return errors.name
+      ? res
+          .status(400)
+          .json(
+            errors.errors.map((item: any) => ({ [item.path]: item.message }))
+          )
+      : res.status(400).json(
+          errors.map((error: any) => ({
+            [error.property]: Object.values(error.constraints).join(", "),
+          }))
+        );
   }
 }
 
@@ -58,10 +60,12 @@ export async function signin(req: Request, res: Response) {
   const { email, password } = req.body;
   try {
     await checkUser(email, password);
-  } catch (error:any) {
-    return res
-      .status(400)
-      .json(error.map((item: any) => ({ [item.property]: item.constraints })));
+  } catch (errors: any) {
+    return res.status(400).json(
+      errors.map((error: any) => ({
+        [error.property]: Object.values(error.constraints).join(", "),
+      }))
+    );
   }
 
   const user = await User.findOne({ where: { email: email } });
