@@ -12,7 +12,7 @@ export default async function (
   }
 
   try {
-    const token = req.headers.authorization.split(" ")[1];
+    const token = req.headers.authorization.replace("Bearer ", "");
     jwt.verify(token, env.accesKey);
     next();
   } catch (error) {

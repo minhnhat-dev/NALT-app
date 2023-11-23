@@ -6,7 +6,7 @@ import User from "../users/models";
 import env from "../../config/env";
 import checkUser from "../../validators/checkSignup";
 
-export async function me(req: Request, res: Response) {
+export async function getMe(req: Request, res: Response) {
   if (!req.headers.authorization) {
     return res.status(401).json({ error: "Unauthorized!" });
   }
@@ -29,7 +29,7 @@ export async function me(req: Request, res: Response) {
   }
 }
 
-export async function signup(req: Request, res: Response) {
+export async function postSignup(req: Request, res: Response) {
   const { name, email, password } = req.body;
 
   try {
@@ -56,7 +56,7 @@ export async function signup(req: Request, res: Response) {
   }
 }
 
-export async function signin(req: Request, res: Response) {
+export async function postSignin(req: Request, res: Response) {
   const { email, password } = req.body;
   try {
     await checkUser(email, password);
@@ -84,7 +84,7 @@ export async function signin(req: Request, res: Response) {
     name: user.dataValues.name,
   };
   const tokenAccess = jwt.sign(payload, env.accesKey, {
-    expiresIn: 60 * 60,
+    expiresIn: "15m",
   });
   const tokenRefresh = jwt.sign(payload, env.refeshKey, {
     expiresIn: "15 days",
@@ -96,7 +96,7 @@ export async function signin(req: Request, res: Response) {
   });
 }
 
-export async function refresh(req: Request, res: Response) {
+export async function postRefresh(req: Request, res: Response) {
   if (!req.headers.authorization) {
     return res.status(401).json({ error: "Unauthorized!" });
   }
@@ -112,7 +112,7 @@ export async function refresh(req: Request, res: Response) {
     };
 
     const tokenAccess = jwt.sign(payload, env.accesKey, {
-      expiresIn: 60 * 60,
+      expiresIn: "15m",
     });
 
     return res.status(200).json({
@@ -121,4 +121,14 @@ export async function refresh(req: Request, res: Response) {
   } catch (error) {
     return res.status(401).json(error);
   }
+}
+
+export async function postSignout(req: Request, res: Response) {
+  const token = req.headers.authorization
+    ? req.headers.authorization.replace("Bearer ", "")
+    : "No token";
+    
+  return res.status(200).json({
+    message: token,
+  });
 }

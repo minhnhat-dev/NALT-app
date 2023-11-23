@@ -1,6 +1,6 @@
 import { DataTypes } from "sequelize";
-import db from "../../database/Connect";
-const sequelize = db.sequelize;
+import { connectPostgres } from "../../database/Postgres";
+const sequelize = connectPostgres.sequelize;
 
 export default sequelize.define(
   "User",
