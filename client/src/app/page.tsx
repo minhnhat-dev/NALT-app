@@ -24,6 +24,7 @@ import {
 import { Layout, Menu, Modal, Button, Col, Row } from "antd";
 import dayjs from "dayjs";
 import Card from "../components/Card";
+import TopSending from "@/components/Statistics/TopSending/TopSending";
 import TransactionHistory from "@/components/Statistics/TransactionHistory/TransactionHistory";
 import UpcomingSpent from "@/components/Statistics/UpcomingSpent/UpcomingSpent";
 import Styles from "./page.module.css";
@@ -119,17 +120,12 @@ const App: React.FC = () => {
 
   return (
     <Layout>
-
       <Sider className={Styles.sider} width={220}>
         <div className={Styles.logo}>
           <span className={Styles.alphabet}>N</span>
           <span className={Styles.name}>ALT</span>
         </div>
-        <Menu
-          mode="inline"
-          style={{ height: "auto" }}
-          items={itemsMenu}
-        />
+        <Menu mode="inline" style={{ height: "auto" }} items={itemsMenu} />
         <Link href={"/login"}>
           <Button className={Styles.button}>
             <LogoutOutlined />
@@ -137,98 +133,133 @@ const App: React.FC = () => {
           </Button>
         </Link>
       </Sider>
-      
+
       <Layout>
         <Header className={Styles.header}>
           <p className={Styles.title}>WELCOME EVERYONE</p>
           <DatePicker defaultValue={dayjs()} format={dateFormat} />
         </Header>
+
         <Content className={Styles.content}>
-          <Row>
-            <Col span={10} style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+          <Row gutter={34} style={{ paddingBottom: "11px" }}>
+            <Col
+              span={10}
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
               <Card
                 balance="2,548.00"
                 expensesAmount="284.000"
                 incomeAmount="1,840.00"
               />
             </Col>
-
-            <Col span={14} style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>Statistic</Col>
+            <Col
+              span={14}
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              Statistic
+            </Col>
           </Row>
 
-          <Row style={{padding: "23px 0 25px 0"}}>
-            <Col span={8} style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+          <Row gutter={21} style={{ paddingTop: "12px" }}>
+            <Col
+              span={8}
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
               <TransactionHistory />
             </Col>
-
-            <Col span={8} style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
-              Top spending
+            <Col
+              span={8}
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <TopSending />
             </Col>
-
-            <Col span={8} style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+            <Col
+              span={8}
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
               <UpcomingSpent />
             </Col>
-
-            <FloatButton.Group
-              trigger="hover"
-              type="primary"
-              style={{ right: 24, bottom: 20 }}
-              icon={<UserOutlined />}
-            >
-              <FloatButton tooltip="Income" icon={<ArrowDownOutlined />} />
-              <FloatButton
-                tooltip="Expenses"
-                icon={<ArrowUpOutlined />}
-                onClick={showModal}
-              />
-            </FloatButton.Group>
-            <Modal
-              title="Add Expenses"
-              centered
-              open={isModalOpen}
-              onOk={handleOk}
-              onCancel={handleCancel}
-              width={"370px"}
-              footer={[]}
-            >
-              <Space direction="vertical">
-                <label>NAME</label>
-                <Select size="large" style={{ width: "300px" }}>
-                  {items.map((item) => (
-                    <option value={item.id}>
-                      <Space direction="horizontal">
-                        <img
-                          src={item.icon}
-                          style={{ width: "32px", height: "32px" }}
-                        />{" "}
-                        {item.name}
-                      </Space>
-                    </option>
-                  ))}
-                </Select>
-                <label>AMOUNT</label>
-                <InputNumber
-                  size="large"
-                  controls={false}
-                  defaultValue={0}
-                  style={{ width: "300px" }}
-                  suffix={<Button>Clear</Button>}
-                  formatter={(value: any) =>
-                    `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-                  }
-                />
-                <label>DATE</label>
-                <DatePicker
-                  defaultValue={dayjs()}
-                  format={dateFormat}
-                  style={{ width: "300px" }}
-                  size="large"
-                />
-                <label>INVOICE</label>
-                <Input type="file" style={{ width: "300px" }} size="large" />
-              </Space>
-            </Modal>
           </Row>
+
+          <FloatButton.Group
+            trigger="hover"
+            type="primary"
+            style={{ right: 24, bottom: 20 }}
+            icon={<UserOutlined />}
+          >
+            <FloatButton tooltip="Income" icon={<ArrowDownOutlined />} />
+            <FloatButton
+              tooltip="Expenses"
+              icon={<ArrowUpOutlined />}
+              onClick={showModal}
+            />
+          </FloatButton.Group>
+          <Modal
+            title="Add Expenses"
+            centered
+            open={isModalOpen}
+            onOk={handleOk}
+            onCancel={handleCancel}
+            width={"370px"}
+            footer={[]}
+          >
+            <Space direction="vertical">
+              <label>NAME</label>
+              <Select size="large" style={{ width: "300px" }}>
+                {items.map((item) => (
+                  <Select.Option value={item.id}>
+                    <Space direction="horizontal">
+                      <img
+                        src={item.icon}
+                        style={{ width: "100%" }}
+                      />{" "}
+                      {item.name}
+                    </Space>
+                  </Select.Option>
+                ))}
+              </Select>
+              <label>AMOUNT</label>
+              <InputNumber
+                size="large"
+                controls={false}
+                defaultValue={0}
+                style={{ width: "300px" }}
+                suffix={<Button>Clear</Button>}
+                formatter={(value: any) =>
+                  `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                }
+              />
+              <label>DATE</label>
+              <DatePicker
+                defaultValue={dayjs()}
+                format={dateFormat}
+                style={{ width: "300px" }}
+                size="large"
+              />
+              <label>INVOICE</label>
+              <Input type="file" style={{ width: "300px" }} size="large" />
+            </Space>
+          </Modal>
         </Content>
       </Layout>
     </Layout>

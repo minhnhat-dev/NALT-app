@@ -6,7 +6,6 @@ import {
 } from "./TransactionHistory.styled";
 
 function TransactionHistory() {
-
   const data = [
     {
       id: 1,
@@ -57,7 +56,6 @@ function TransactionHistory() {
       value: -10,
     },
   ];
-
   return (
     <TransactionHistoryContainer>
       <TransactionHistoryTitle>Transaction History</TransactionHistoryTitle>
@@ -76,5 +74,4 @@ function TransactionHistory() {
     </TransactionHistoryContainer>
   );
 }
-
 export default TransactionHistory;

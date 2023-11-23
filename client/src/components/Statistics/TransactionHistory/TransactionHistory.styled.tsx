@@ -3,7 +3,7 @@ import styled from "styled-components";
 export const TransactionHistoryContainer = styled.div`
   display: flex;
   flex-direction: column;
-  width: fit-content;
+  width: 100%;
   height: 400px;
   overflow: auto;
   border: 1px solid white;

@@ -93,7 +93,7 @@ const SignUp = ({}) => {
               type="name"
               placeholder="Username"
               prefix={<UserOutlined />}
-              style={{ width: "500px" }}
+              style={{ width: "50%" }}
               value={username}
               onChange={(e) => setUsername(e.target.value)}
             />
@@ -103,7 +103,7 @@ const SignUp = ({}) => {
               type="email"
               placeholder="Email"
               prefix={<MailOutlined />}
-              style={{ width: "500px" }}
+              style={{ width: "50%" }}
               value={email}
               onChange={(e) => {
                 setEmail(e.target.value), setChangeError(true);
@@ -114,7 +114,7 @@ const SignUp = ({}) => {
               type="password"
               placeholder="Password"
               prefix={<LockOutlined />}
-              style={{ width: "500px" }}
+              style={{ width: "50%" }}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
@@ -124,7 +124,7 @@ const SignUp = ({}) => {
               type="password"
               placeholder="Confirm Password"
               prefix={<LockOutlined />}
-              style={{ width: "500px" }}
+              style={{ width: "50%" }}
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
             />

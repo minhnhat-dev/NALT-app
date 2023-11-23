@@ -13,7 +13,6 @@ export const ItemInfo = styled.span`
   gap: 14px;
   justify-content: center;
   align-items: center;
-  margin-right: 60px;
 `;
 export const ItemWrap = styled.span`
 display:flex;
@@ -39,13 +38,13 @@ export const ItemValue = styled.span <{ $isNegative?: boolean; }>`
 export const ItemButton = styled.button`
   border-radius: 40px;
   background: #ecf9f8;
-  width: 109.945px;
+  width: fit-content;
   height: 36px;
   padding: 10px;
   color: #438883;
   font-weight: 500;
   font-size: 16px;
-  line-height: normal;
+  line-height: 16px;
   border: none;
   cursor: pointer;
 `;
