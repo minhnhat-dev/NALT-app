@@ -41,7 +41,20 @@ function TransactionHistory() {
       name: "Spotify",
       image: "/assets/images/image-16.png",
       day: "Feb 14, 2023",
-      value: 20,
+      value: -20,
+    },
+    {
+      id: 6,
+      name: "Nextflix",
+      image: "/assets/images/image-17.png",
+      day: "Feb 14, 2023",
+      value: +40,
+    },{
+      id: 7,
+      name: "UpWork",
+      image: "/assets/images/image-13.png",
+      day: "Feb 14, 2023",
+      value: -10,
     },
   ];
 

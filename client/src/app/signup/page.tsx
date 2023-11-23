@@ -38,6 +38,7 @@ const SignUp = ({}) => {
         placement: "top",
       });
     }
+    
     setUsername((prev) => {
       return prev + username;
     });
@@ -58,9 +59,6 @@ const SignUp = ({}) => {
     setChangeError(false);
   };
 
-  // const handleSignIn = () => {
-  //   router.replace('/login')
-  // };
 
   const mailformat =
     /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;

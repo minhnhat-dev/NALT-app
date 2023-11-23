@@ -11,10 +11,10 @@ import {
   notification,
 } from "antd";
 import { MailOutlined, LockOutlined } from "@ant-design/icons";
-import Styles from "./login.module.css";
 import axios, { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import Styles from "./login.module.css";
 
 const { Title, Paragraph } = Typography;
 
@@ -27,7 +27,7 @@ const Login = ({}) => {
 
   const handleSignIn = async () => {
     try {
-      const reponse = await axios({
+      const response = await axios({
         method: "post",
         url: "https://nalt-server-test.onrender.com/api/auth/signin",
         data: {
@@ -36,12 +36,19 @@ const Login = ({}) => {
         },
       });
       router.replace("/");
-      console.log(reponse.status);
-    } catch (error) {
-      console.log(error);
+      console.log(response.status);
+    } catch (error: any) {
+      console.log(error.response.data);
+
       api.info({
         message: "ERROR",
-        description: (error as AxiosError).message,
+        description: (
+          <>
+            {error.response.data.map((err: {}) => (
+              <p>{Object.values(err)}</p>
+            ))}
+          </>
+        ),
         placement: "top",
       });
     }
@@ -57,10 +64,6 @@ const Login = ({}) => {
     setChangeError(false);
   };
 
-  // const handleRegister = () => {
-  //   router.replace('/signup')
-  // }
-
   const mailformat =
     /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
 
@@ -71,14 +74,12 @@ const Login = ({}) => {
           <img src="./assets/svgs/logo.svg" className={Styles.img} />
           <Space direction="vertical" size="large">
             <Typography>
-              <Title>Hello, Friends</Title>
+              <Title className={Styles.welcome}>Hello, Friends</Title>
               <Paragraph className={Styles.description}>
                 Enter your personal details and strat journy with us
               </Paragraph>
-              <Link href={'/signup'}>
-                <Button className={Styles.button}>
-                  SIGN UP
-                </Button>
+              <Link href={"/signup"}>
+                <Button className={Styles.button}>SIGN UP</Button>
               </Link>
             </Typography>
           </Space>

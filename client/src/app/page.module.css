@@ -1,3 +1,4 @@
+
 .sider {
   border: 1px solid black;
   background: white !important;
@@ -22,7 +23,7 @@
 }
 
 .button {
-  margin-left: 2.5rem;
+  margin-left: 2.5rem ;
   color: red !important;
 }
 
@@ -49,4 +50,8 @@
 
 .colBalance {
   border: solid 1px black; 
+}
+
+.modal {
+  background-color: red;
 }

@@ -1,5 +1,7 @@
 "use client";
 import React from "react";
+import Link from "next/link";
+import "antd/dist/reset.css";
 import {
   HomeFilled,
   WalletFilled,
@@ -8,11 +10,19 @@ import {
   LogoutOutlined,
   ArrowDownOutlined,
   ArrowUpOutlined,
+  CloseOutlined,
 } from "@ant-design/icons";
 import type { MenuProps } from "antd";
-import { FloatButton } from 'antd';
+import {
+  InputNumber,
+  FloatButton,
+  Input,
+  Select,
+  Space,
+  DatePicker,
+} from "antd";
 import { Layout, Menu, Modal, Button, Col, Row } from "antd";
-import Date from "@/components/Date";
+import dayjs from "dayjs";
 import Card from "../components/Card";
 import TransactionHistory from "@/components/Statistics/TransactionHistory/TransactionHistory";
 import UpcomingSpent from "@/components/Statistics/UpcomingSpent/UpcomingSpent";
@@ -67,8 +77,34 @@ const itemsMenu: MenuProps["items"] = [
   },
 ];
 
+const items = [
+  {
+    id: 1,
+    name: "Upwork",
+    icon: "./assets/images/image-13.png",
+  },
+  {
+    id: 2,
+    name: "Youtube",
+    icon: "./assets/images/image-6.png",
+  },
+  {
+    id: 3,
+    name: "Paypal",
+    icon: "./assets/images/image-5.png",
+  },
+  {
+    id: 4,
+    name: "Spofily",
+    icon: "./assets/images/image-16.png",
+  },
+];
+
+const dateFormat = "ddd, DD MMM YYYY";
+
 const App: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = React.useState(false);
+
   const showModal = () => {
     setIsModalOpen(true);
   };
@@ -80,48 +116,56 @@ const App: React.FC = () => {
   const handleCancel = () => {
     setIsModalOpen(false);
   };
-  
+
   return (
     <Layout>
-      <Sider className={Styles.sider} width={220} >
+
+      <Sider className={Styles.sider} width={220}>
         <div className={Styles.logo}>
           <span className={Styles.alphabet}>N</span>
           <span className={Styles.name}>ALT</span>
         </div>
         <Menu
           mode="inline"
-          defaultSelectedKeys={["0"]}
           style={{ height: "auto" }}
           items={itemsMenu}
         />
-        <Button className={Styles.button}>
-          <LogoutOutlined />
-          Logout
-        </Button>
+        <Link href={"/login"}>
+          <Button className={Styles.button}>
+            <LogoutOutlined />
+            Logout
+          </Button>
+        </Link>
       </Sider>
-
+      
       <Layout>
         <Header className={Styles.header}>
           <p className={Styles.title}>WELCOME EVERYONE</p>
-          <Date />
+          <DatePicker defaultValue={dayjs()} format={dateFormat} />
         </Header>
-
         <Content className={Styles.content}>
           <Row>
-            <Col span={10}>
-              <Card balance="100000" expensesAmount="150000" incomeAmount="50000" />
+            <Col span={10} style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+              <Card
+                balance="2,548.00"
+                expensesAmount="284.000"
+                incomeAmount="1,840.00"
+              />
             </Col>
-            <Col span={14}>Statistic</Col>
+
+            <Col span={14} style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>Statistic</Col>
           </Row>
 
-          <Row>
-            <Col span={8}>
+          <Row style={{padding: "23px 0 25px 0"}}>
+            <Col span={8} style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
               <TransactionHistory />
             </Col>
 
-            <Col span={8}>Top spending</Col>
+            <Col span={8} style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+              Top spending
+            </Col>
 
-            <Col span={8}>
+            <Col span={8} style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
               <UpcomingSpent />
             </Col>
 
@@ -132,14 +176,57 @@ const App: React.FC = () => {
               icon={<UserOutlined />}
             >
               <FloatButton tooltip="Income" icon={<ArrowDownOutlined />} />
-              <FloatButton tooltip="Expenses" icon={<ArrowUpOutlined />} onClick={showModal} />
+              <FloatButton
+                tooltip="Expenses"
+                icon={<ArrowUpOutlined />}
+                onClick={showModal}
+              />
             </FloatButton.Group>
-
             <Modal
-              title="Expenses"
+              title="Add Expenses"
+              centered
               open={isModalOpen}
               onOk={handleOk}
-              onCancel={handleCancel}>
+              onCancel={handleCancel}
+              width={"370px"}
+              footer={[]}
+            >
+              <Space direction="vertical">
+                <label>NAME</label>
+                <Select size="large" style={{ width: "300px" }}>
+                  {items.map((item) => (
+                    <option value={item.id}>
+                      <Space direction="horizontal">
+                        <img
+                          src={item.icon}
+                          style={{ width: "32px", height: "32px" }}
+                        />{" "}
+                        {item.name}
+                      </Space>
+                    </option>
+                  ))}
+                </Select>
+                <label>AMOUNT</label>
+                <InputNumber
+                  size="large"
+                  controls={false}
+                  defaultValue={0}
+                  style={{ width: "300px" }}
+                  suffix={<Button>Clear</Button>}
+                  formatter={(value: any) =>
+                    `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                  }
+                />
+                <label>DATE</label>
+                <DatePicker
+                  defaultValue={dayjs()}
+                  format={dateFormat}
+                  style={{ width: "300px" }}
+                  size="large"
+                />
+                <label>INVOICE</label>
+                <Input type="file" style={{ width: "300px" }} size="large" />
+              </Space>
             </Modal>
           </Row>
         </Content>

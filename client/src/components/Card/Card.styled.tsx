@@ -12,7 +12,7 @@ export const CardStyled = styled.div`
 `
 export const CardContainerStyled = styled.div`
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   flex-direction: column;
   height: 100%;
 `
