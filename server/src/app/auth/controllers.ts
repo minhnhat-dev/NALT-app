@@ -5,6 +5,7 @@ import constants from "./constants";
 import User from "../users/models";
 import env from "../../config/env";
 import checkUser from "../../validators/checkSignup";
+import { connectRedis } from "../../database/Redis";
 
 export async function getMe(req: Request, res: Response) {
   if (!req.headers.authorization) {
@@ -83,6 +84,7 @@ export async function postSignin(req: Request, res: Response) {
     email: user.dataValues.email,
     name: user.dataValues.name,
   };
+
   const tokenAccess = jwt.sign(payload, env.accesKey, {
     expiresIn: "15m",
   });
@@ -102,7 +104,7 @@ export async function postRefresh(req: Request, res: Response) {
   }
 
   try {
-    const token = req.headers.authorization.split(" ")[1];
+    const token = req.headers.authorization.replace("Bearer ", "");
     const decoded = jwt.verify(token, env.refeshKey) as jwt.JwtPayload;
 
     const payload = {
@@ -127,8 +129,17 @@ export async function postSignout(req: Request, res: Response) {
   const token = req.headers.authorization
     ? req.headers.authorization.replace("Bearer ", "")
     : "No token";
-    
+
+  try {
+    jwt.verify(token, env.refeshKey) as jwt.JwtPayload;
+  } catch (error) {
+    return res.status(401).json(error);
+  }
+
+  const redis = connectRedis.redis;
+  redis.set(`token:${token}`, "revoked");
+
   return res.status(200).json({
-    message: token,
+    message: "Logout success!",
   });
 }
