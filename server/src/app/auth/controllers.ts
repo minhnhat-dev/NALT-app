@@ -4,30 +4,20 @@ import jwt from "jsonwebtoken";
 import constants from "./constants";
 import User from "../users/models";
 import env from "../../config/env";
-import checkUser from "../../validators/checkSignup";
-import { connectRedis } from "../../database/Redis";
+import checkUser from "../../validators/checkUser";
 
 export async function getMe(req: Request, res: Response) {
-  if (!req.headers.authorization) {
-    return res.status(401).json({ error: "Unauthorized!" });
-  }
+  const decoded = res.locals.decoded;
 
-  try {
-    const token = req.headers.authorization.split(" ")[1];
-    const decoded = jwt.verify(token, env.accesKey) as jwt.JwtPayload;
+  const user = {
+    id: decoded.id,
+    email: decoded.email,
+    name: decoded.name,
+  };
 
-    const user = {
-      id: decoded.id,
-      email: decoded.email,
-      name: decoded.name,
-    };
-
-    return res.status(200).json({
-      user: user,
-    });
-  } catch (error) {
-    return res.status(401).json(error);
-  }
+  return res.status(200).json({
+    user: user,
+  });
 }
 
 export async function postSignup(req: Request, res: Response) {
@@ -99,44 +89,27 @@ export async function postSignin(req: Request, res: Response) {
 }
 
 export async function postRefresh(req: Request, res: Response) {
-  if (!req.headers.authorization) {
-    return res.status(401).json({ error: "Unauthorized!" });
-  }
+  const decoded = res.locals.decoded;
 
-  try {
-    const token = req.headers.authorization.replace("Bearer ", "");
-    const decoded = jwt.verify(token, env.refeshKey) as jwt.JwtPayload;
+  const payload = {
+    id: decoded.id,
+    email: decoded.email,
+    name: decoded.name,
+  };
 
-    const payload = {
-      id: decoded.id,
-      email: decoded.email,
-      name: decoded.name,
-    };
+  const tokenAccess = jwt.sign(payload, env.accesKey, {
+    expiresIn: "15m",
+  });
 
-    const tokenAccess = jwt.sign(payload, env.accesKey, {
-      expiresIn: "15m",
-    });
-
-    return res.status(200).json({
-      access: tokenAccess,
-    });
-  } catch (error) {
-    return res.status(401).json(error);
-  }
+  return res.status(200).json({
+    access: tokenAccess,
+  });
 }
 
 export async function postSignout(req: Request, res: Response) {
-  const token = req.headers.authorization
-    ? req.headers.authorization.replace("Bearer ", "")
-    : "No token";
+  const redis = res.locals.redis;
+  const token = res.locals.token;
 
-  try {
-    jwt.verify(token, env.refeshKey) as jwt.JwtPayload;
-  } catch (error) {
-    return res.status(401).json(error);
-  }
-
-  const redis = connectRedis.redis;
   redis.set(`token:${token}`, "revoked");
 
   return res.status(200).json({
