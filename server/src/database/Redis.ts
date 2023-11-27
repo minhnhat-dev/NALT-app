@@ -1,5 +1,5 @@
-import { error, log } from "console";
 import Redis from "ioredis";
+import env from "../config/env";
 
 class Connect {
   private static instance: Connect;
@@ -7,15 +7,15 @@ class Connect {
 
   private constructor() {
     this.redis = new Redis({
-      port: 18774,
-      host: "redis-18774.c1.asia-northeast1-1.gce.cloud.redislabs.com",
-      username: "default",
-      password: "lD8CIY4pkERyeCHG3AVG06nBlflagYsS",
+      port: env.portRedis,
+      host: env.hostRedis,
+      username: env.usernameRedis,
+      password: env.passwordRedis,
     });
 
     this.redis.status === "connecting"
       ? console.log("Connected to Redis")
-      : console.error("Error connecting to Redis:", error);
+      : console.error("Error connecting to Redis!");
   }
 
   public static get Instance() {
