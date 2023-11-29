@@ -44,7 +44,8 @@
 
 .content {
   padding: 30px 55px 25px 32px;
-  background: #FFF;
+  background: radial-gradient(102.76% 80.95% at 18.95% 16.81%, #BDE3DE 0%, rgba(246, 238, 248, 0.38) 100%);
+
 }
 
 .colBalance {

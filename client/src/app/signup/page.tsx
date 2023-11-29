@@ -6,6 +6,7 @@ import axios, { AxiosError } from "axios";
 import { Layout, Col, Row, Input, Space, Typography, Button, notification } from "antd";
 import { MailOutlined, LockOutlined, UserOutlined } from "@ant-design/icons";
 import Styles from "./signup.module.css";
+import { json } from "stream/consumers";
 
 const { Title, Paragraph } = Typography;
 
@@ -20,7 +21,7 @@ const SignUp = ({}) => {
 
   const handleSignUp = async () => {
     try {
-      const reponse = await axios({
+      const response = await axios({
         method: "post",
         url: "https://nalt-server-test.onrender.com/api/auth/signup",
         data: {
@@ -30,7 +31,9 @@ const SignUp = ({}) => {
         },
       });
       router.replace('/login')
-      console.log(reponse.status)
+      // const userJson = JSON.stringify(response.data.data)
+      // localStorage.setItem('user', userJson)
+      console.log(response.data)
     } catch (error) {
       api.info({
         message: "ERROR",
@@ -128,7 +131,8 @@ const SignUp = ({}) => {
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
             />
-            <Button
+            <Button style={{width: '50%'}}
+              block
               disabled={
                 email.match(mailformat) &&
                 password &&

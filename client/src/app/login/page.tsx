@@ -36,15 +36,16 @@ const Login = ({}) => {
         },
       });
       router.replace("/");
-      console.log(response.status);
+      const userJson = JSON.stringify(response.data)
+      localStorage.setItem('user', userJson)
+      console.log(response.data);
     } catch (error: any) {
-      console.log(error.response.data);
-
+      console.log(error.response.data.data);
       api.info({
         message: "ERROR",
         description: (
           <>
-            {error.response.data.map((err: {}) => (
+            {error.response.data.data.map((err: {}) => (
               <p>{Object.values(err)}</p>
             ))}
           </>
@@ -96,7 +97,7 @@ const Login = ({}) => {
               type="email"
               placeholder="Email"
               prefix={<MailOutlined />}
-              style={{ width: "500px" }}
+              style={{ width: "50%" }}
               value={email}
               onChange={(e) => {
                 setEmail(e.target.value), setChangeError(true);
@@ -107,7 +108,7 @@ const Login = ({}) => {
               type="password"
               placeholder="Password"
               prefix={<LockOutlined />}
-              style={{ width: "500px" }}
+              style={{ width: "50%" }}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />

@@ -10,7 +10,7 @@ import {
   LogoutOutlined,
   ArrowDownOutlined,
   ArrowUpOutlined,
-  CloseOutlined,
+  
 } from "@ant-design/icons";
 import type { MenuProps } from "antd";
 import {
@@ -28,6 +28,7 @@ import TopSending from "@/components/Statistics/TopSending/TopSending";
 import TransactionHistory from "@/components/Statistics/TransactionHistory/TransactionHistory";
 import UpcomingSpent from "@/components/Statistics/UpcomingSpent/UpcomingSpent";
 import Styles from "./page.module.css";
+import StatisticalTables from "@/components/Statistics/StatisticalTables/StatisticalTables";
 
 const { Header, Content, Sider } = Layout;
 
@@ -117,7 +118,8 @@ const App: React.FC = () => {
   const handleCancel = () => {
     setIsModalOpen(false);
   };
-
+  
+  
   return (
     <Layout>
       <Sider className={Styles.sider} width={220}>
@@ -160,11 +162,12 @@ const App: React.FC = () => {
               span={14}
               style={{
                 display: "flex",
+                width: '100%',
                 justifyContent: "center",
                 alignItems: "center",
               }}
             >
-              Statistic
+              <StatisticalTables/>
             </Col>
           </Row>
 
@@ -220,19 +223,16 @@ const App: React.FC = () => {
             open={isModalOpen}
             onOk={handleOk}
             onCancel={handleCancel}
-            width={"370px"}
+            width={"fix-content"}
             footer={[]}
           >
             <Space direction="vertical">
               <label>NAME</label>
-              <Select size="large" style={{ width: "300px" }}>
+              <Select size="large" style={{ width: "100%" }}>
                 {items.map((item) => (
                   <Select.Option value={item.id}>
                     <Space direction="horizontal">
-                      <img
-                        src={item.icon}
-                        style={{ width: "100%" }}
-                      />{" "}
+                      <img src={item.icon} style={{ width: "100%" }} />{" "}
                       {item.name}
                     </Space>
                   </Select.Option>
@@ -243,7 +243,7 @@ const App: React.FC = () => {
                 size="large"
                 controls={false}
                 defaultValue={0}
-                style={{ width: "300px" }}
+                style={{ width: "100%" }}
                 suffix={<Button>Clear</Button>}
                 formatter={(value: any) =>
                   `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
@@ -253,11 +253,11 @@ const App: React.FC = () => {
               <DatePicker
                 defaultValue={dayjs()}
                 format={dateFormat}
-                style={{ width: "300px" }}
+                style={{ width: "100%" }}
                 size="large"
               />
               <label>INVOICE</label>
-              <Input type="file" style={{ width: "300px" }} size="large" />
+              <Input type="file" style={{ width: "100%" }} size="large" />
             </Space>
           </Modal>
         </Content>
@@ -267,3 +267,7 @@ const App: React.FC = () => {
 };
 
 export default App;
+function useAuth(): { isAuthenticated: any; } {
+  throw new Error("Function not implemented.");
+}
+
