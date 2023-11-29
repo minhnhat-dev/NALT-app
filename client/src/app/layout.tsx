@@ -1,9 +1,9 @@
 import "./globals.css";
-import "antd/dist/reset.css";
+// import "antd/dist/reset.css";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import AntdRegistry from "./AntdRegistry";
 import React from "react";
+import AntdRegistry from "./AntdRegistry";
 import StyledComponentsRegistry from "./StyledComponentsRegistry";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -21,9 +21,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <StyledComponentsRegistry>
+       { <StyledComponentsRegistry>
           <AntdRegistry>{children}</AntdRegistry>
-        </StyledComponentsRegistry>
+        </StyledComponentsRegistry>}
       </body>
     </html>
   );
