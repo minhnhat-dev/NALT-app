@@ -5,6 +5,7 @@ import constants from "./constants";
 import User from "../users/models";
 import env from "../../config/env";
 import checkUser from "../../validators/checkUser";
+import { v4 } from "uuid";
 
 export async function getMe(req: Request, res: Response) {
   const decoded = res.locals.decoded;
@@ -73,13 +74,14 @@ export async function postSignin(req: Request, res: Response) {
     id: user.dataValues.id,
     email: user.dataValues.email,
     name: user.dataValues.name,
+    jti: v4(),
   };
 
   const tokenAccess = jwt.sign(payload, env.accesKey, {
-    expiresIn: "15m",
+    expiresIn: "1 days",
   });
   const tokenRefresh = jwt.sign(payload, env.refeshKey, {
-    expiresIn: "15 days",
+    expiresIn: "7 days",
   });
 
   return res.status(200).json({
@@ -95,10 +97,11 @@ export async function postRefresh(req: Request, res: Response) {
     id: decoded.id,
     email: decoded.email,
     name: decoded.name,
+    jti: decoded.jti,
   };
 
   const tokenAccess = jwt.sign(payload, env.accesKey, {
-    expiresIn: "15m",
+    expiresIn: "1 days",
   });
 
   return res.status(200).json({
@@ -108,9 +111,10 @@ export async function postRefresh(req: Request, res: Response) {
 
 export async function postSignout(req: Request, res: Response) {
   const redis = res.locals.redis;
-  const token = res.locals.token;
+  const decoded = res.locals.decoded;
+  const jti = res.locals.jti;
 
-  redis.set(`token:${token}`, "revoked");
+  redis.set(`jti:${jti}`, decoded.exp * 1000);
 
   return res.status(200).json({
     message: "Logout success!",

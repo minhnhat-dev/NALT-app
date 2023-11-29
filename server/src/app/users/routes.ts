@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { getUsers } from "./controllers";
-import verifyToken from "../../middlewares/verifyToken";
+import verifyToken from "../../middlewares/accesToken";
 
 const router = Router();
 

@@ -6,8 +6,10 @@ import cors from "cors";
 import checkEnv from "./validators/checkEnv";
 import users from "./app/users/routes";
 import auth from "./app/auth/routes";
+import { job } from "./tasks/BlacklistTokenCleaner";
 
 checkEnv();
+job.start();
 
 const app = express();
 

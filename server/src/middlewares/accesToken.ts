@@ -14,19 +14,18 @@ export default async function (
 
   try {
     const token = req.headers.authorization.replace("Bearer ", "");
-    const decoded = jwt.verify(token, env.refeshKey);
-
+    const decoded = jwt.verify(token, env.accesKey);
+    const jti = typeof decoded === "object" && decoded.jti;
     const redis = connectRedis.redis;
-    const result = await redis.get(`token:${token}`);
+    const result = await redis.get(`jti:${jti}`);
 
-    if (result === "revoked") {
+    if (result !== null) {
       return res.status(401).json({ message: "Token has been revoked!" });
     }
 
     res.locals.decoded = decoded;
-    res.locals.token = token;
-    res.locals.redis = connectRedis.redis;
-
+    res.locals.redis = redis;
+    res.locals.jti = jti;
     next();
   } catch (error) {
     return res.status(401).json(error);
