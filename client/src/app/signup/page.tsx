@@ -3,10 +3,18 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import axios, { AxiosError } from "axios";
-import { Layout, Col, Row, Input, Space, Typography, Button, notification } from "antd";
+import {
+  Layout,
+  Col,
+  Row,
+  Input,
+  Space,
+  Typography,
+  Button,
+  notification,
+} from "antd";
 import { MailOutlined, LockOutlined, UserOutlined } from "@ant-design/icons";
 import Styles from "./signup.module.css";
-import { json } from "stream/consumers";
 
 const { Title, Paragraph } = Typography;
 
@@ -17,7 +25,7 @@ const SignUp = ({}) => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [changeError, setChangeError] = useState(false);
   const [api, contextHolder] = notification.useNotification();
-  const router = useRouter()
+  const router = useRouter();
 
   const handleSignUp = async () => {
     try {
@@ -30,10 +38,10 @@ const SignUp = ({}) => {
           password: password,
         },
       });
-      router.replace('/login')
+      router.replace("/login");
       // const userJson = JSON.stringify(response.data.data)
       // localStorage.setItem('user', userJson)
-      console.log(response.data)
+      console.log(response.data);
     } catch (error) {
       api.info({
         message: "ERROR",
@@ -41,7 +49,7 @@ const SignUp = ({}) => {
         placement: "top",
       });
     }
-    
+
     setUsername((prev) => {
       return prev + username;
     });
@@ -62,7 +70,6 @@ const SignUp = ({}) => {
     setChangeError(false);
   };
 
-
   const mailformat =
     /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
 
@@ -78,9 +85,7 @@ const SignUp = ({}) => {
                 To keep connected with us please login with your personal info
               </Paragraph>
               <Link href={"/login"}>
-                <Button className={Styles.button} >
-                  SIGN IN
-                </Button>
+                <Button className={Styles.button}>SIGN IN</Button>
               </Link>
             </Typography>
           </Space>
@@ -131,7 +136,8 @@ const SignUp = ({}) => {
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
             />
-            <Button style={{width: '50%'}}
+            <Button
+              style={{ width: "50%" }}
               block
               disabled={
                 email.match(mailformat) &&

@@ -1,6 +1,7 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import "antd/dist/reset.css";
 import {
   HomeFilled,
@@ -10,7 +11,6 @@ import {
   LogoutOutlined,
   ArrowDownOutlined,
   ArrowUpOutlined,
-  
 } from "@ant-design/icons";
 import type { MenuProps } from "antd";
 import {
@@ -23,15 +23,16 @@ import {
 } from "antd";
 import { Layout, Menu, Modal, Button, Col, Row } from "antd";
 import dayjs from "dayjs";
-import Card from "../components/Card";
+import Card from "../components/Card/Card";
 import TopSending from "@/components/Statistics/TopSending/TopSending";
 import TransactionHistory from "@/components/Statistics/TransactionHistory/TransactionHistory";
 import UpcomingSpent from "@/components/Statistics/UpcomingSpent/UpcomingSpent";
-import Styles from "./page.module.css";
+import Styles from "./home.module.css";
 import StatisticalTables from "@/components/Statistics/StatisticalTables/StatisticalTables";
+import { access } from "fs";
+import axios from "axios";
 
 const { Header, Content, Sider } = Layout;
-
 const itemsMenu: MenuProps["items"] = [
   {
     key: "sub1",
@@ -78,7 +79,6 @@ const itemsMenu: MenuProps["items"] = [
     ],
   },
 ];
-
 const items = [
   {
     id: 1,
@@ -101,25 +101,50 @@ const items = [
     icon: "./assets/images/image-16.png",
   },
 ];
-
 const dateFormat = "ddd, DD MMM YYYY";
 
-const App: React.FC = () => {
+const Home = () => {
   const [isModalOpen, setIsModalOpen] = React.useState(false);
-
+  const [isClient, setIsClient] = React.useState(false);
+  const [user, setUser] = React.useState({ email: "" });
   const showModal = () => {
     setIsModalOpen(true);
   };
-
   const handleOk = () => {
     setIsModalOpen(false);
   };
-
   const handleCancel = () => {
     setIsModalOpen(false);
   };
-  
-  
+  const token = JSON.parse(localStorage.getItem("user") || "{}");
+  const router = useRouter();
+
+  useEffect(() => {
+    const callApi = async () => {
+      try {
+        const response = await axios({
+          method: "get",
+          url: "https://nalt-server-test.onrender.com/api/auth/me",
+          headers: { Authorization: `Bearer ${token.access}` },
+        });
+        console.log(response.data);
+        setUser({ email: response.data.user.email });
+      } catch (error: any) {
+        console.log(error.response.data.data);
+      }
+    };
+    callApi();
+  }, []);
+
+  //client
+  useEffect(() => {
+    localStorage.getItem("user") && setIsClient(true);
+  });
+  //server
+  if (!isClient) {
+    return router.replace("/login");
+  }
+
   return (
     <Layout>
       <Sider className={Styles.sider} width={220}>
@@ -138,7 +163,7 @@ const App: React.FC = () => {
 
       <Layout>
         <Header className={Styles.header}>
-          <p className={Styles.title}>WELCOME EVERYONE</p>
+          <p className={Styles.title}>{user.email}</p>
           <DatePicker defaultValue={dayjs()} format={dateFormat} />
         </Header>
 
@@ -162,12 +187,12 @@ const App: React.FC = () => {
               span={14}
               style={{
                 display: "flex",
-                width: '100%',
+                width: "100%",
                 justifyContent: "center",
                 alignItems: "center",
               }}
             >
-              <StatisticalTables/>
+              <StatisticalTables />
             </Col>
           </Row>
 
@@ -266,8 +291,4 @@ const App: React.FC = () => {
   );
 };
 
-export default App;
-function useAuth(): { isAuthenticated: any; } {
-  throw new Error("Function not implemented.");
-}
-
+export default Home;
