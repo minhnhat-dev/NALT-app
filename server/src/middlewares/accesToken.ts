@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken";
 import env from "../config/env";
 import { connectRedis } from "../database/Redis";
 
-export default async function (
+export const accesToken = async function (
   req: Request,
   res: Response,
   next: NextFunction
@@ -30,4 +30,4 @@ export default async function (
   } catch (error) {
     return res.status(401).json(error);
   }
-}
+};

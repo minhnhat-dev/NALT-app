@@ -1,7 +1,7 @@
 import { Router } from "express";
 import * as controllers from "./controllers";
-import accesToken from "../../middlewares/accesToken";
-import refreshToken from "../../middlewares/refreshToken";
+import { accesToken } from "../../middlewares/accesToken";
+import { refreshToken } from "../../middlewares/refreshToken";
 
 const router = Router();
 
