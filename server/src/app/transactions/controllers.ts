@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
-import { Transaction, Category } from "./models";
-import checkTransaction from "../../validators/checkTransaction";
+import { Transaction } from "./models";
+import { checkTransaction } from "../../validators/checkTransaction";
 
 // Transaction.sync({force: true})
 // Category.sync({force: true})
@@ -10,41 +10,21 @@ export async function getTransactions(req: Request, res: Response) {
   return res.status(200).json({ transactions });
 }
 
-export async function postIncome(req: Request, res: Response) {
-  const { amount, categoryId, date, description } = req.body;
+export async function postTransactions(req: Request, res: Response) {
+  const { type, amount, date, description, categoryId } = req.body;
   try {
-    await checkTransaction(amount, categoryId, date, description);
+    await checkTransaction(type, amount, date, description, categoryId);
     const decoded = res.locals.decoded;
 
     await Transaction.create({
-      type: "income",
+      type: type,
       amount: amount,
-      category: categoryId,
       date: date,
       description: description,
+      categoryId: categoryId,
       userId: decoded.id,
     });
-    return res.status(200).json({ message: "create transation" });
-  } catch (error) {
-    return res.status(400).json(error);
-  }
-}
-
-export async function postExpense(req: Request, res: Response) {
-  const { amount, category, date, description } = req.body;
-  try {
-    await checkTransaction(amount, category, date, description);
-    const decoded = res.locals.decoded;
-
-    await Transaction.create({
-      type: "expense",
-      amount: amount,
-      category: category,
-      date: date,
-      description: description,
-      userId: decoded.id,
-    });
-    return res.status(200).json({ message: "create transation" });
+    return res.status(200).json({ message: "create income" });
   } catch (error) {
     return res.status(400).json(error);
   }

@@ -3,14 +3,15 @@ import {
   IsOptional,
   validateOrReject,
   IsDateString,
+  IsUUID,
 } from "class-validator";
 
 class Transaction {
   @IsNotEmpty()
-  amount: number;
+  type: string;
 
   @IsNotEmpty()
-  category: string;
+  amount: number;
 
   @IsNotEmpty()
   @IsDateString()
@@ -19,27 +20,39 @@ class Transaction {
   @IsOptional()
   description: string;
 
+  @IsUUID()
+  categoryId: string;
+
   constructor(
+    type: string,
     amount: number,
-    category: string,
     date: string,
-    description: string
+    description: string,
+    categoryId: string
   ) {
+    this.type = type;
     this.amount = amount;
-    this.category = category;
     this.date = date;
     this.description = description;
+    this.categoryId = categoryId;
   }
 }
 
-export default async function (
+export async function checkTransaction(
+  type: string,
   amount: number,
-  category: string,
   date: string,
-  description: string = ""
+  description: string,
+  categoryId: string
 ) {
   try {
-    const transaction = new Transaction(amount, category, date, description);
+    const transaction = new Transaction(
+      type,
+      amount,
+      date,
+      description,
+      categoryId
+    );
     await validateOrReject(transaction);
     return transaction;
   } catch (error) {
