@@ -1,3 +1,4 @@
+
 .sider {
   border: 1px solid black;
   background: white !important;
@@ -22,7 +23,7 @@
 }
 
 .button {
-  margin-left: 2.5rem;
+  margin-left: 2.5rem ;
   color: red !important;
 }
 
@@ -42,12 +43,15 @@
 }
 
 .content {
-  padding: 0;
-  min-height: 550;
-  background: #FFF;
+  padding: 30px 55px 25px 32px;
+  background: radial-gradient(102.76% 80.95% at 18.95% 16.81%, #BDE3DE 0%, rgba(246, 238, 248, 0.38) 100%);
+
 }
 
 .colBalance {
   border: solid 1px black; 
-  
+}
+
+.modal {
+  background-color: red;
 }

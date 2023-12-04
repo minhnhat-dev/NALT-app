@@ -1,5 +1,8 @@
 "use client";
 import React, { useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import axios, { AxiosError } from "axios";
 import {
   Layout,
   Col,
@@ -10,58 +13,60 @@ import {
   Button,
   notification,
 } from "antd";
-import { MailOutlined, LockOutlined } from "@ant-design/icons";
-import axios, { AxiosError } from "axios";
-import { useRouter } from "next/navigation";
-import Link from "next/link";
-import Styles from "./login.module.css";
+import { MailOutlined, LockOutlined, UserOutlined } from "@ant-design/icons";
+import Styles from "./signup.module.css";
 
 const { Title, Paragraph } = Typography;
 
-const Login = ({}) => {
+const SignUp = ({}) => {
+  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [changeError, setChangeError] = useState(false);
-  const router = useRouter();
   const [api, contextHolder] = notification.useNotification();
+  const router = useRouter();
 
-  const handleSignIn = async () => {
+  const handleSignUp = async () => {
     try {
       const response = await axios({
         method: "post",
-        url: "https://nalt-server-test.onrender.com/api/auth/signin",
+        url: "https://nalt-server-test.onrender.com/api/auth/signup",
         data: {
+          name: username,
           email: email,
           password: password,
         },
       });
-      router.replace("/");
-      const userJson = JSON.stringify(response.data)
-      localStorage.setItem('user', userJson)
+      router.replace("/login");
+      // const userJson = JSON.stringify(response.data.data)
+      // localStorage.setItem('user', userJson)
       console.log(response.data);
-    } catch (error: any) {
-      console.log(error.response.data.data);
+    } catch (error) {
       api.info({
         message: "ERROR",
-        description: (
-          <>
-            {error.response.data.data.map((err: {}) => (
-              <p>{Object.values(err)}</p>
-            ))}
-          </>
-        ),
+        description: (error as AxiosError).message,
         placement: "top",
       });
     }
 
+    setUsername((prev) => {
+      return prev + username;
+    });
     setEmail((prev) => {
       return prev + email;
     });
     setPassword((prev) => {
       return prev + password;
     });
+    setConfirmPassword((prev) => {
+      return prev + confirmPassword;
+    });
+
     setEmail("");
     setPassword("");
+    setUsername("");
+    setConfirmPassword("");
     setChangeError(false);
   };
 
@@ -75,12 +80,12 @@ const Login = ({}) => {
           <img src="./assets/svgs/logo.svg" className={Styles.img} />
           <Space direction="vertical" size="large">
             <Typography>
-              <Title className={Styles.welcome}>Hello, Friends</Title>
+              <Title>Welcome Back!</Title>
               <Paragraph className={Styles.description}>
-                Enter your personal details and strat journy with us
+                To keep connected with us please login with your personal info
               </Paragraph>
-              <Link href={"/signup"}>
-                <Button className={Styles.button}>SIGN UP</Button>
+              <Link href={"/login"}>
+                <Button className={Styles.button}>SIGN IN</Button>
               </Link>
             </Typography>
           </Space>
@@ -89,8 +94,17 @@ const Login = ({}) => {
         <Col span={15} className={Styles.col15}>
           <Space direction="vertical" size="large">
             <Typography>
-              <Title className={Styles.title}>Sign in to Nalt</Title>
+              <Title className={Styles.title}>Create Account</Title>
             </Typography>
+            <Input
+              size="large"
+              type="name"
+              placeholder="Username"
+              prefix={<UserOutlined />}
+              style={{ width: "50%" }}
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+            />
             <Input
               status={changeError && !email.match(mailformat) ? "error" : ""}
               size="large"
@@ -112,17 +126,39 @@ const Login = ({}) => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
+            <Input.Password
+              status={confirmPassword !== password ? "error" : ""}
+              size="large"
+              type="password"
+              placeholder="Confirm Password"
+              prefix={<LockOutlined />}
+              style={{ width: "50%" }}
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+            />
             <Button
-              disabled={email && password ? false : true}
+              style={{ width: "50%" }}
+              block
+              disabled={
+                email.match(mailformat) &&
+                password &&
+                confirmPassword === password
+                  ? false
+                  : true
+              }
               className={Styles.button}
-              onClick={handleSignIn}
+              onClick={handleSignUp}
             >
-              SIGN IN
+              SIGN UP
             </Button>
             <div>
               {changeError && !email.match(mailformat) ? (
                 <Paragraph style={{ color: "red", height: 22 }}>
                   Please Enter Email
+                </Paragraph>
+              ) : confirmPassword !== password ? (
+                <Paragraph style={{ color: "red", height: 22 }}>
+                  Confirm Password does not match Password
                 </Paragraph>
               ) : (
                 <Paragraph style={{ height: 22 }} />
@@ -135,4 +171,4 @@ const Login = ({}) => {
     </Layout>
   );
 };
-export default Login;
+export default SignUp;

@@ -1,23 +1,38 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import "antd/dist/reset.css";
 import {
   HomeFilled,
   WalletFilled,
   UserOutlined,
   SignalFilled,
   LogoutOutlined,
+  ArrowDownOutlined,
+  ArrowUpOutlined,
 } from "@ant-design/icons";
 import type { MenuProps } from "antd";
-import { Layout, Menu, theme, Button, Col, Row } from "antd";
-import Date from "@/components/Date";
+import {
+  InputNumber,
+  FloatButton,
+  Input,
+  Select,
+  Space,
+  DatePicker,
+} from "antd";
+import { Layout, Menu, Modal, Button, Col, Row } from "antd";
+import dayjs from "dayjs";
+import Card from "../components/Card/Card";
+import TopSending from "@/components/Statistics/TopSending/TopSending";
 import TransactionHistory from "@/components/Statistics/TransactionHistory/TransactionHistory";
 import UpcomingSpent from "@/components/Statistics/UpcomingSpent/UpcomingSpent";
-import ButtonFloat from "@/components/FloatButton";
-import Styles from "./page.module.css";
-import Card from "../components/Card";
+import Styles from "./home.module.css";
+import StatisticalTables from "@/components/Statistics/StatisticalTables/StatisticalTables";
+import { access } from "fs";
+import axios from "axios";
 
 const { Header, Content, Sider } = Layout;
-
 const itemsMenu: MenuProps["items"] = [
   {
     key: "sub1",
@@ -64,8 +79,72 @@ const itemsMenu: MenuProps["items"] = [
     ],
   },
 ];
+const items = [
+  {
+    id: 1,
+    name: "Upwork",
+    icon: "./assets/images/image-13.png",
+  },
+  {
+    id: 2,
+    name: "Youtube",
+    icon: "./assets/images/image-6.png",
+  },
+  {
+    id: 3,
+    name: "Paypal",
+    icon: "./assets/images/image-5.png",
+  },
+  {
+    id: 4,
+    name: "Spofily",
+    icon: "./assets/images/image-16.png",
+  },
+];
+const dateFormat = "ddd, DD MMM YYYY";
 
-const App: React.FC = () => {
+const Home = () => {
+  const [isModalOpen, setIsModalOpen] = React.useState(false);
+  const [isClient, setIsClient] = React.useState(false);
+  const [user, setUser] = React.useState({ email: "" });
+  const showModal = () => {
+    setIsModalOpen(true);
+  };
+  const handleOk = () => {
+    setIsModalOpen(false);
+  };
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
+  const token = JSON.parse(localStorage.getItem("user") || "{}");
+  const router = useRouter();
+
+  useEffect(() => {
+    const callApi = async () => {
+      try {
+        const response = await axios({
+          method: "get",
+          url: "https://nalt-server-test.onrender.com/api/auth/me",
+          headers: { Authorization: `Bearer ${token.access}` },
+        });
+        console.log(response.data);
+        setUser({ email: response.data.user.email });
+      } catch (error: any) {
+        console.log(error.response.data.data);
+      }
+    };
+    callApi();
+  }, []);
+
+  //client
+  useEffect(() => {
+    localStorage.getItem("user") && setIsClient(true);
+  });
+  //server
+  if (!isClient) {
+    return router.replace("/login");
+  }
+
   return (
     <Layout>
       <Sider className={Styles.sider} width={220}>
@@ -73,45 +152,143 @@ const App: React.FC = () => {
           <span className={Styles.alphabet}>N</span>
           <span className={Styles.name}>ALT</span>
         </div>
-        <Menu
-          mode="inline"
-          defaultSelectedKeys={["0"]}
-          style={{ height: "80%" }}
-          items={itemsMenu}
-        />
-        <Button className={Styles.button}>
-          <LogoutOutlined />
-          Logout
-        </Button>
+        <Menu mode="inline" style={{ height: "auto" }} items={itemsMenu} />
+        <Link href={"/login"}>
+          <Button className={Styles.button}>
+            <LogoutOutlined />
+            Logout
+          </Button>
+        </Link>
       </Sider>
 
       <Layout>
         <Header className={Styles.header}>
-          <p className={Styles.title}>WELCOME EVERYONE</p>
-          <Date />
+          <p className={Styles.title}>{user.email}</p>
+          <DatePicker defaultValue={dayjs()} format={dateFormat} />
         </Header>
 
         <Content className={Styles.content}>
-          <Row>
-            <Col span={10}>
-              <Card balance="100000" expensesAmount="150000" incomeAmount="50000"/>
+          <Row gutter={34} style={{ paddingBottom: "11px" }}>
+            <Col
+              span={10}
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Card
+                balance="2,548.00"
+                expensesAmount="284.000"
+                incomeAmount="1,840.00"
+              />
             </Col>
-            <Col span={14}>Statistic</Col>
+            <Col
+              span={14}
+              style={{
+                display: "flex",
+                width: "100%",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <StatisticalTables />
+            </Col>
           </Row>
-          <Row>
-            <Col span={8}>
+
+          <Row gutter={21} style={{ paddingTop: "12px" }}>
+            <Col
+              span={8}
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
               <TransactionHistory />
             </Col>
-            <Col span={8}>Top spending</Col>
-            <Col span={8}>
+            <Col
+              span={8}
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <TopSending />
+            </Col>
+            <Col
+              span={8}
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
               <UpcomingSpent />
             </Col>
-            <ButtonFloat />
           </Row>
+
+          <FloatButton.Group
+            trigger="hover"
+            type="primary"
+            style={{ right: 24, bottom: 20 }}
+            icon={<UserOutlined />}
+          >
+            <FloatButton tooltip="Income" icon={<ArrowDownOutlined />} />
+            <FloatButton
+              tooltip="Expenses"
+              icon={<ArrowUpOutlined />}
+              onClick={showModal}
+            />
+          </FloatButton.Group>
+          <Modal
+            title="Add Expenses"
+            centered
+            open={isModalOpen}
+            onOk={handleOk}
+            onCancel={handleCancel}
+            width={"fix-content"}
+            footer={[]}
+          >
+            <Space direction="vertical">
+              <label>NAME</label>
+              <Select size="large" style={{ width: "100%" }}>
+                {items.map((item) => (
+                  <Select.Option value={item.id}>
+                    <Space direction="horizontal">
+                      <img src={item.icon} style={{ width: "100%" }} />{" "}
+                      {item.name}
+                    </Space>
+                  </Select.Option>
+                ))}
+              </Select>
+              <label>AMOUNT</label>
+              <InputNumber
+                size="large"
+                controls={false}
+                defaultValue={0}
+                style={{ width: "100%" }}
+                suffix={<Button>Clear</Button>}
+                formatter={(value: any) =>
+                  `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                }
+              />
+              <label>DATE</label>
+              <DatePicker
+                defaultValue={dayjs()}
+                format={dateFormat}
+                style={{ width: "100%" }}
+                size="large"
+              />
+              <label>INVOICE</label>
+              <Input type="file" style={{ width: "100%" }} size="large" />
+            </Space>
+          </Modal>
         </Content>
       </Layout>
     </Layout>
   );
 };
 
-export default App;
+export default Home;
