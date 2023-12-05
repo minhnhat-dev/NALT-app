@@ -116,33 +116,37 @@ const Home = () => {
   const handleCancel = () => {
     setIsModalOpen(false);
   };
-  const token = JSON.parse(localStorage.getItem("user") || "{}");
   const router = useRouter();
 
   useEffect(() => {
-    const callApi = async () => {
-      try {
-        const response = await axios({
-          method: "get",
-          url: "https://nalt-server-test.onrender.com/api/auth/me",
-          headers: { Authorization: `Bearer ${token.access}` },
-        });
-        console.log(response.data);
-        setUser({ email: response.data.user.email });
-      } catch (error: any) {
-        console.log(error.response.data.data);
-      }
-    };
-    callApi();
+    setIsClient(true);
   }, []);
 
-  //client
+  //Server
   useEffect(() => {
-    localStorage.getItem("user") && setIsClient(true);
-  });
-  //server
-  if (!isClient) {
-    return router.replace("/login");
+    const userToken = localStorage.getItem("user");
+    if (userToken) {
+      const token = JSON.parse(userToken || "{}");
+      const callApi = async () => {
+        try {
+          const response = await axios({
+            method: "get",
+            url: "https://nalt-server-test.onrender.com/api/auth/me",
+            headers: { Authorization: `Bearer ${token.access}` },
+          });
+          console.log(response.data);
+          setUser({ email: response.data.user.email });
+        } catch (error: any) {
+          console.log(error.response.data.data);
+        }
+      };
+      callApi();
+    }
+  }, []);
+
+  //Client
+  if (isClient) {
+    router.replace("/login");
   }
 
   return (

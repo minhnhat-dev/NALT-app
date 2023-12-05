@@ -1,10 +1,10 @@
 "use client";
 
-import React from "react";
 import { createCache, extractStyle, StyleProvider } from "@ant-design/cssinjs";
 import type Entity from "@ant-design/cssinjs/es/Cache";
-import { useServerInsertedHTML } from "next/navigation";
 import { ConfigProvider } from "antd";
+import { useServerInsertedHTML } from "next/navigation";
+import React from "react";
 
 const StyledComponentsRegistry = ({ children }: React.PropsWithChildren) => {
   const cache = React.useMemo<Entity>(() => createCache(), []);
