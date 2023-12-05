@@ -25,7 +25,7 @@ class User {
   }
 }
 
-export default async function (
+export async function validateUser (
   email: string,
   password: string,
   name: string = ""

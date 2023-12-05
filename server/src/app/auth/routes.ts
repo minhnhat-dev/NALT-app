@@ -1,14 +1,16 @@
 import { Router } from "express";
 import * as controllers from "./controllers";
-import accesToken from "../../middlewares/accesToken";
-import refreshToken from "../../middlewares/refreshToken";
+import {
+  verifyTokenAcces,
+  verifyTokenRefesh,
+} from "../../middlewares/verifyToken";
 
 const router = Router();
 
-router.get("/me", accesToken, controllers.getMe);
-router.post("/signup", controllers.postSignup);
-router.post("/signin", controllers.postSignin);
-router.post("/refresh", refreshToken, controllers.postRefresh);
-router.post("/signout", accesToken, controllers.postSignout);
+router.get("/me", verifyTokenAcces, controllers.me);
+router.post("/signup", controllers.signup);
+router.post("/signin", controllers.signin);
+router.post("/refresh", verifyTokenRefesh, controllers.refresh);
+router.post("/signout", verifyTokenAcces, controllers.signout);
 
 export default router;

@@ -4,34 +4,35 @@ import jwt from "jsonwebtoken";
 import constants from "./constants";
 import User from "../users/models";
 import env from "../../config/env";
-import checkUser from "../../validators/checkUser";
+import { validateUser } from "../../validators/validateUser";
 import { v4 } from "uuid";
+import { JwtData } from "../../type/jwt.interface";
+import { connectRedis } from "../../database/Redis";
 
-export async function getMe(req: Request, res: Response) {
-  const decoded = res.locals.decoded;
-
+export async function me(req: Request, res: Response) {
   const user = {
-    id: decoded.id,
-    email: decoded.email,
-    name: decoded.name,
+    id: req.JwtDecodedData.id,
+    name: req.JwtDecodedData.name,
+    email: req.JwtDecodedData.email,
   };
-
   return res.status(200).json({
     user: user,
   });
 }
 
-export async function postSignup(req: Request, res: Response) {
+export async function signup(req: Request, res: Response) {
   const { name, email, password } = req.body;
 
   try {
-    await checkUser(email, password, name);
+    const user = await validateUser(email, password, name);
     const hash = bcrypt.hashSync(password, constants.SALT_ROUNDS);
+
     await User.create({
-      name: name,
-      email: email,
+      name: user.name,
+      email: user.email,
       password: hash,
     });
+
     return res.status(201).json({ message: "Signup successful" });
   } catch (errors: any) {
     return errors.name
@@ -48,10 +49,38 @@ export async function postSignup(req: Request, res: Response) {
   }
 }
 
-export async function postSignin(req: Request, res: Response) {
+export async function signin(req: Request, res: Response) {
   const { email, password } = req.body;
   try {
-    await checkUser(email, password);
+    const user = await validateUser(email, password);
+    const userDb = await User.findOne({ where: { email: user.email } });
+    if (!userDb) {
+      return res.status(401).json({ error: "Password or Email invalid" });
+    }
+
+    const isCompare = bcrypt.compareSync(password, userDb.dataValues.password);
+    if (!isCompare) {
+      return res.status(401).json({ error: "Password or Email invalid" });
+    }
+
+    const payload: JwtData = {
+      id: userDb.dataValues.id,
+      email: userDb.dataValues.email,
+      name: userDb.dataValues.name,
+      jti: v4(),
+    };
+
+    const tokenAccess = jwt.sign(payload, env.accesKey, {
+      expiresIn: "1 days",
+    });
+    const tokenRefresh = jwt.sign(payload, env.refeshKey, {
+      expiresIn: "7 days",
+    });
+
+    return res.status(200).json({
+      access: tokenAccess,
+      refresh: tokenRefresh,
+    });
   } catch (errors: any) {
     return res.status(400).json(
       errors.map((error: any) => ({
@@ -59,45 +88,11 @@ export async function postSignin(req: Request, res: Response) {
       }))
     );
   }
-
-  const user = await User.findOne({ where: { email: email } });
-  if (!user) {
-    return res.status(401).json({ error: "Not found user!" });
-  }
-
-  const isCompare = bcrypt.compareSync(password, user.dataValues.password);
-  if (!isCompare) {
-    return res.status(401).json({ error: "Password incorrect!" });
-  }
-
-  const payload = {
-    id: user.dataValues.id,
-    email: user.dataValues.email,
-    name: user.dataValues.name,
-    jti: v4(),
-  };
-
-  const tokenAccess = jwt.sign(payload, env.accesKey, {
-    expiresIn: "1 days",
-  });
-  const tokenRefresh = jwt.sign(payload, env.refeshKey, {
-    expiresIn: "7 days",
-  });
-
-  return res.status(200).json({
-    access: tokenAccess,
-    refresh: tokenRefresh,
-  });
 }
 
-export async function postRefresh(req: Request, res: Response) {
-  const decoded = res.locals.decoded;
-
+export async function refresh(req: Request, res: Response) {
   const payload = {
-    id: decoded.id,
-    email: decoded.email,
-    name: decoded.name,
-    jti: decoded.jti,
+    ...req.jwtData,
   };
 
   const tokenAccess = jwt.sign(payload, env.accesKey, {
@@ -109,12 +104,10 @@ export async function postRefresh(req: Request, res: Response) {
   });
 }
 
-export async function postSignout(req: Request, res: Response) {
-  const redis = res.locals.redis;
-  const decoded = res.locals.decoded;
-  const jti = res.locals.jti;
+export async function signout(req: Request, res: Response) {
+  const redis = connectRedis.redis;
 
-  redis.set(`jti:${jti}`, decoded.exp * 1000);
+  redis.set(`jti:${req.JwtDecodedData.jti}`, req.JwtDecodedData.exp * 1000);
 
   return res.status(200).json({
     message: "Logout success!",
