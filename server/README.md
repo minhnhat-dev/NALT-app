@@ -1,7 +1,5 @@
 # Welcome to the NALT Server
 
-![cat work](https://i.pinimg.com/originals/42/0e/39/420e39bd34d74ffae5c6af92a701d5cb.gif)
-
 ## Getting Started
 
 ```bash
@@ -16,9 +14,10 @@ Open [http://localhost:5000](http://localhost:5000) with your browser to see the
 ```bash
 GET /api/users/
 
-POST /api/users/register/
+POST /api/auth/signup/
+POST /api/auth/signin/
+GET /api/auth/me/
 
-POST /api/users/login/
 ```
 
 ## Deploy on Render
