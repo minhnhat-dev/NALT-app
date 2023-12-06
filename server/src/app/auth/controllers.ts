@@ -15,9 +15,11 @@ export async function me(req: Request, res: Response) {
     name: req.JwtDecodedData.name,
     email: req.JwtDecodedData.email,
   };
-  return res.status(200).json({
-    user: user,
-  });
+  return res.status(200).json([
+    {
+      user: user,
+    },
+  ]);
 }
 
 export async function signup(req: Request, res: Response) {
@@ -55,12 +57,12 @@ export async function signin(req: Request, res: Response) {
     const user = await validateUser(email, password);
     const userDb = await User.findOne({ where: { email: user.email } });
     if (!userDb) {
-      return res.status(401).json({ error: "Password or Email invalid" });
+      return res.status(401).json([{ error: "Password or Email invalid" }]);
     }
 
     const isCompare = bcrypt.compareSync(password, userDb.dataValues.password);
     if (!isCompare) {
-      return res.status(401).json({ error: "Password or Email invalid" });
+      return res.status(401).json([{ error: "Password or Email invalid" }]);
     }
 
     const payload: JwtData = {
