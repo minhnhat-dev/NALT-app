@@ -6,6 +6,9 @@ import cors from "cors";
 import checkEnv from "./validators/checkEnv";
 import users from "./app/users/routes";
 import auth from "./app/auth/routes";
+import transactions from "./app/transactions/routes";
+import categories from "./app/categories/routes";
+
 import { job } from "./tasks/clearTokenExpired";
 import "./type";
 
@@ -27,8 +30,10 @@ app.use(
 );
 app.use(express.static(path.join(__dirname, "public")));
 
-app.use("/api/users", users);
 app.use("/api/auth", auth);
+app.use("/api/users", users);
+app.use("/api/categories", categories);
+app.use("/api/transactions", transactions);
 
 app.use((req: Request, res: Response) => {
   return res.status(404).json({ message: "Could not find this route." });

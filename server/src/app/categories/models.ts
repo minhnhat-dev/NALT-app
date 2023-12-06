@@ -1,9 +1,9 @@
 import { DataTypes } from "sequelize";
 import { connectPostgres } from "../../database/Postgres";
-
+import { User } from "../users/models";
 const sequelize = connectPostgres.sequelize;
 
-const User = sequelize.define("user", {
+const Category = sequelize.define("category", {
   id: {
     type: DataTypes.UUID,
     defaultValue: DataTypes.UUIDV4,
@@ -14,21 +14,18 @@ const User = sequelize.define("user", {
   },
   name: {
     type: DataTypes.STRING,
-  },
-  email: {
-    type: DataTypes.STRING,
     allowNull: false,
-    unique: true,
-    validate: {
-      isEmail: true,
-    },
   },
-  password: {
-    type: DataTypes.STRING,
+  type: {
+    type: DataTypes.ENUM("income", "expense"),
+    defaultValue: "income",
     allowNull: false,
   },
 });
 
-// User.sync({ force: true });
+User.hasMany(Category);
+Category.belongsTo(User);
 
-export { User };
+// Category.sync({ force: true });
+
+export { Category };

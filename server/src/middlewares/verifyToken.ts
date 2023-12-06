@@ -15,7 +15,6 @@ export async function verifyTokenAcces(
   try {
     const token = req.headers.authorization.replace("Bearer ", "");
     const decoded = jwt.verify(token, env.accesKey);
-    console.log(decoded);
 
     if (typeof decoded !== "object" || !decoded.jti)
       return res.status(401).json({ error: "Unauthorized!" });
