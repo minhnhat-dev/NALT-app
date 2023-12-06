@@ -1,8 +1,6 @@
 "use client";
 import React, { useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import axios, { AxiosError } from "axios";
 import {
   Layout,
   Col,
@@ -15,6 +13,7 @@ import {
 } from "antd";
 import { MailOutlined, LockOutlined, UserOutlined } from "@ant-design/icons";
 import Styles from "./signup.module.css";
+import useSignUp from "@/hooks/useSignUp";
 
 const { Title, Paragraph } = Typography;
 
@@ -25,31 +24,10 @@ const SignUp = ({}) => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [changeError, setChangeError] = useState(false);
   const [api, contextHolder] = notification.useNotification();
-  const router = useRouter();
+  const { fetchData } = useSignUp(api, username, email, password);
 
-  const handleSignUp = async () => {
-    try {
-      const response = await axios({
-        method: "post",
-        url: "https://nalt-server-test.onrender.com/api/auth/signup",
-        data: {
-          name: username,
-          email: email,
-          password: password,
-        },
-      });
-      router.replace("/login");
-      // const userJson = JSON.stringify(response.data.data)
-      // localStorage.setItem('user', userJson)
-      console.log(response.data);
-    } catch (error) {
-      api.info({
-        message: "ERROR",
-        description: (error as AxiosError).message,
-        placement: "top",
-      });
-    }
-
+  const handleSignUp = () => {
+    fetchData();
     setUsername((prev) => {
       return prev + username;
     });
@@ -62,7 +40,6 @@ const SignUp = ({}) => {
     setConfirmPassword((prev) => {
       return prev + confirmPassword;
     });
-
     setEmail("");
     setPassword("");
     setUsername("");
@@ -70,8 +47,7 @@ const SignUp = ({}) => {
     setChangeError(false);
   };
 
-  const mailformat =
-    /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+  const mailformat =/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
 
   return (
     <Layout className={Styles.wrapper}>
@@ -90,7 +66,6 @@ const SignUp = ({}) => {
             </Typography>
           </Space>
         </Col>
-
         <Col span={15} className={Styles.col15}>
           <Space direction="vertical" size="large">
             <Typography>

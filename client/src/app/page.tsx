@@ -29,7 +29,6 @@ import TransactionHistory from "@/components/Statistics/TransactionHistory/Trans
 import UpcomingSpent from "@/components/Statistics/UpcomingSpent/UpcomingSpent";
 import Styles from "./home.module.css";
 import StatisticalTables from "@/components/Statistics/StatisticalTables/StatisticalTables";
-import { access } from "fs";
 import axios from "axios";
 
 const { Header, Content, Sider } = Layout;
@@ -79,6 +78,7 @@ const itemsMenu: MenuProps["items"] = [
     ],
   },
 ];
+
 const items = [
   {
     id: 1,
@@ -101,28 +101,55 @@ const items = [
     icon: "./assets/images/image-16.png",
   },
 ];
+
 const dateFormat = "ddd, DD MMM YYYY";
 
 const Home = () => {
   const [isModalOpen, setIsModalOpen] = React.useState(false);
+  const [isModal2Open, setIsModal2Open] = React.useState(false);
+  const [amount, setAmount] = React.useState(0);
+  const [date, setDate] = React.useState(dayjs());
+  const [catelogyId, setCatelogyId] = React.useState(items[0].id);
+
   const [isClient, setIsClient] = React.useState(false);
   const [user, setUser] = React.useState({ email: "" });
+
   const showModal = () => {
     setIsModalOpen(true);
   };
-  const handleOk = () => {
-    setIsModalOpen(false);
+
+  const showModal2 = () => {
+    setIsModal2Open(true);
   };
-  const handleCancel = () => {
-    setIsModalOpen(false);
-  };
+
   const router = useRouter();
+
+  const handleAddData = async (type: string) => {
+    console.log(catelogyId, amount, date)
+    // try {
+    //   const response = await axios({
+    //     method: "post",
+    //     url: "https://nalt-server-test.onrender.com/api/transections",
+    //     data: {
+    //       catelogyId: catelogyId,
+    //       amount: amount,
+    //       date: date,
+    //       type: type
+    //     },
+    //   });
+    //   console.log(response.data);
+    // } catch (error) {
+    //   console.log(error);
+    // }
+  };
 
   useEffect(() => {
     setIsClient(true);
+    if (isClient) {
+      router.replace("/login");
+    }
   }, []);
 
-  //Server
   useEffect(() => {
     const userToken = localStorage.getItem("user");
     if (userToken) {
@@ -137,17 +164,12 @@ const Home = () => {
           console.log(response.data);
           setUser({ email: response.data.user.email });
         } catch (error: any) {
-          console.log(error.response.data.data);
+          console.log(error.response.data);
         }
       };
       callApi();
     }
   }, []);
-
-  //Client
-  if (isClient) {
-    router.replace("/login");
-  }
 
   return (
     <Layout>
@@ -239,24 +261,85 @@ const Home = () => {
             style={{ right: 24, bottom: 20 }}
             icon={<UserOutlined />}
           >
-            <FloatButton tooltip="Income" icon={<ArrowDownOutlined />} />
+            <FloatButton
+              tooltip="Income"
+              icon={<ArrowDownOutlined />}
+              onClick={showModal2}
+            />
             <FloatButton
               tooltip="Expenses"
               icon={<ArrowUpOutlined />}
               onClick={showModal}
             />
           </FloatButton.Group>
+
+          <Modal
+            title="Add Income"
+            centered
+            open={isModal2Open}
+            onOk={() => setIsModal2Open(false)}
+            onCancel={() => setIsModal2Open(false)}
+            width={"fix-content"}
+            footer={[
+              <Button style={{ width: "100%" }} onClick={() => handleAddData("income")}>
+                Add
+              </Button>,
+            ]}
+          >
+            <Space direction="vertical">
+              <label>CATELOGY</label>
+              <Select size="large" style={{ width: "100%" }} value={catelogyId} onChange={(e: any) => setCatelogyId(e.target.value)}>
+                {items.map((item) => (
+                  <Select.Option value={item.id}>
+                    <Space direction="horizontal">
+                      <img src={item.icon} style={{ width: "100%" }} />{" "}
+                      {item.name}
+                    </Space>
+                  </Select.Option>
+                ))}
+              </Select>
+              <label>AMOUNT</label>
+              <InputNumber
+                value={amount}
+                onChange={(e) => setAmount(e.target.value)}
+                size="large"
+                controls={false}
+                defaultValue={0}
+                style={{ width: "100%" }}
+                suffix={<Button>Clear</Button>}
+                formatter={(value: any) =>
+                  `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                }
+              />
+              <label>DATE</label>
+              <DatePicker
+                value={date}
+                onChange={(e) => setDate(dayjs())}
+                defaultValue={dayjs()}
+                format={dateFormat}
+                style={{ width: "100%" }}
+                size="large"
+              />
+              <label>INVOICE</label>
+              <Input type="file" style={{ width: "100%" }} size="large" />
+            </Space>
+          </Modal>
+
           <Modal
             title="Add Expenses"
             centered
             open={isModalOpen}
-            onOk={handleOk}
-            onCancel={handleCancel}
+            onOk={() => setIsModalOpen(false)}
+            onCancel={() => setIsModalOpen(false)}
             width={"fix-content"}
-            footer={[]}
+            footer={[
+              <Button style={{ width: "100%" }} onClick={() => handleAddData("expense")}>
+                Add
+              </Button>,
+            ]}
           >
             <Space direction="vertical">
-              <label>NAME</label>
+              <label>CATALOGY</label>
               <Select size="large" style={{ width: "100%" }}>
                 {items.map((item) => (
                   <Select.Option value={item.id}>
@@ -269,6 +352,8 @@ const Home = () => {
               </Select>
               <label>AMOUNT</label>
               <InputNumber
+                value={amount}
+                onChange={(e) => setAmount(e.target.value)}
                 size="large"
                 controls={false}
                 defaultValue={0}
@@ -280,6 +365,8 @@ const Home = () => {
               />
               <label>DATE</label>
               <DatePicker
+                value={date}
+                onChange={(e) => setDate(dayjs())}
                 defaultValue={dayjs()}
                 format={dateFormat}
                 style={{ width: "100%" }}

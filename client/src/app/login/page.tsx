@@ -45,8 +45,8 @@ const Login = ({}) => {
         message: "ERROR",
         description: (
           <>
-            {error.response.data.data.map((err: {}) => (
-              <p>{Object.values(err)}</p>
+            {error.response.data.map((err: {}, index:number) => (
+              <p key={index}>{Object.values(err)}</p>
             ))}
           </>
         ),
