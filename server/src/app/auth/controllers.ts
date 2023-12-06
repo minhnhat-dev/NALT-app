@@ -15,11 +15,9 @@ export async function me(req: Request, res: Response) {
     name: req.JwtDecodedData.name,
     email: req.JwtDecodedData.email,
   };
-  return res.status(200).json([
-    {
-      user: user,
-    },
-  ]);
+  return res.status(200).json({
+    user: user,
+  });
 }
 
 export async function signup(req: Request, res: Response) {
