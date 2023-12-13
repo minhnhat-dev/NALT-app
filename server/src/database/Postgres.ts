@@ -23,4 +23,4 @@ class Connect {
   }
 }
 
-export default Connect.Instance;
+export const connectPostgres = Connect.Instance;

@@ -1,18 +1,27 @@
 import { DataTypes } from "sequelize";
-import db from "../database/Connect";
-const sequelize = db.sequelize;
+import { connectPostgres } from "../../database/Postgres";
+
+const sequelize = connectPostgres.sequelize;
 
 const User = sequelize.define("user", {
   id: {
     type: DataTypes.UUID,
     defaultValue: DataTypes.UUIDV4,
     primaryKey: true,
+    allowNull: false,
     unique: true,
+    validate: { isUUID: 4 },
   },
-  username: {
+  name: {
+    type: DataTypes.STRING,
+  },
+  email: {
     type: DataTypes.STRING,
     allowNull: false,
     unique: true,
+    validate: {
+      isEmail: true,
+    },
   },
   password: {
     type: DataTypes.STRING,
@@ -20,4 +29,6 @@ const User = sequelize.define("user", {
   },
 });
 
-export default User;
+// User.sync({ force: true });
+
+export { User };
