@@ -8,7 +8,7 @@ import users from "./app/users/routes";
 import auth from "./app/auth/routes";
 import transactions from "./app/transactions/routes";
 import categories from "./app/categories/routes";
-
+import {rootPath, routerAdmin} from "./app/admin/routes";
 import { job } from "./tasks/clearTokenExpired";
 import "./type";
 
@@ -34,6 +34,7 @@ app.use("/api/auth", auth);
 app.use("/api/users", users);
 app.use("/api/categories", categories);
 app.use("/api/transactions", transactions);
+app.use(rootPath, routerAdmin);
 
 app.use((req: Request, res: Response) => {
   return res.status(404).json({ message: "Could not find this route." });

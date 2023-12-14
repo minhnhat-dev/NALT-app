@@ -2,14 +2,14 @@
   "name": "server",
   "version": "1.0.0",
   "description": "nalt server",
-  "main": "main.js",
+  "main": "main.ts",
   "scripts": {
     "start": "npm run build && node dist/main.js",
     "dev": "nodemon src/main.ts",
     "build": "npx tsc"
   },
   "keywords": [],
-  "author": "",
+  "author": "ryu",
   "license": "ISC",
   "devDependencies": {
     "@types/bcrypt": "^5.0.1",
@@ -23,6 +23,9 @@
     "typescript": "^5.2.2"
   },
   "dependencies": {
+    "@admin-bro/express": "^3.1.0",
+    "@admin-bro/sequelize": "^1.2.1",
+    "admin-bro": "^4.0.1",
     "bcrypt": "^5.1.1",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.0",
@@ -30,11 +33,14 @@
     "cron": "^3.1.6",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
+    "express-formidable": "^1.2.0",
+    "express-session": "^1.17.3",
     "ioredis": "^5.3.2",
     "jsonwebtoken": "^9.0.2",
     "multer": "^1.4.5-lts.1",
     "pg": "^8.11.3",
     "sequelize": "^6.33.0",
+    "tslib": "^2.6.2",
     "uuid": "^9.0.1"
   }
 }

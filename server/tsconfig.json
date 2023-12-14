@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "es2016",
+    "target": "ESNext",
     "module": "CommonJS",
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
@@ -9,8 +9,8 @@
     "rootDir": "src",
     "outDir": "dist",
     "typeRoots": ["./node_modules/@types", "./src/types"],
-    "experimentalDecorators": true,
+    "experimentalDecorators": true
   },
   "include": ["src/**/*.ts"],
-  "exclude": ["node_modules"],
+  "exclude": ["node_modules"]
 }
