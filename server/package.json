@@ -27,7 +27,6 @@
     "@admin-bro/sequelize": "^1.2.1",
     "admin-bro": "^4.0.1",
     "bcrypt": "^5.1.1",
-    "class-transformer": "^0.5.1",
     "class-validator": "^0.14.0",
     "cors": "^2.8.5",
     "cron": "^3.1.6",

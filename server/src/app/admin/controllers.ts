@@ -6,7 +6,7 @@ import { Transaction } from "../transactions/models";
 
 AdminBro.registerAdapter(AdminBroSequelize);
 
-const adminBro = new AdminBro({
+const AdminBroOptions = {
   resources: [
     {
       resource: User,
@@ -14,6 +14,7 @@ const adminBro = new AdminBro({
         navigation: {
           icon: "User",
         },
+        properties: {},
       },
     },
     {
@@ -37,6 +38,8 @@ const adminBro = new AdminBro({
     companyName: "NALT",
   },
   rootPath: "/admin",
-});
+};
+
+const adminBro = new AdminBro(AdminBroOptions);
 
 export { adminBro };
