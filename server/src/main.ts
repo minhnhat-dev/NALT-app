@@ -9,8 +9,8 @@ import auth from "./app/auth/routes";
 import transactions from "./app/transactions/routes";
 import categories from "./app/categories/routes";
 import { job } from "./tasks/clearTokenExpired";
-import "./type";
 import { rootPath, routerAdmin } from "./app/admin/routes";
+import "./type";
 
 checkEnv();
 job.start();

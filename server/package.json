@@ -2,10 +2,10 @@
   "name": "server",
   "version": "1.0.0",
   "description": "nalt server",
-  "main": "main.ts",
+  "main": "src/main.ts",
   "scripts": {
     "start": "npm run build && node dist/main.js",
-    "dev": "nodemon src/main.ts",
+    "dev": "nodemon",
     "build": "npx tsc"
   },
   "keywords": [],
