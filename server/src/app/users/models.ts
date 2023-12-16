@@ -27,6 +27,11 @@ const User = sequelize.define("user", {
     type: DataTypes.STRING,
     allowNull: false,
   },
+  role: {
+    type: DataTypes.ENUM("admin", "user", "restricted", ),
+    defaultValue: "user",
+    allowNull: false,
+  },
 });
 
 // User.sync({ force: true });
