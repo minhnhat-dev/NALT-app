@@ -14,6 +14,7 @@ export async function me(req: Request, res: Response) {
     id: req.JwtDecodedData.id,
     name: req.JwtDecodedData.name,
     email: req.JwtDecodedData.email,
+    role: req.JwtDecodedData.role,
   };
   return res.status(200).json({
     user: user,
@@ -21,16 +22,17 @@ export async function me(req: Request, res: Response) {
 }
 
 export async function signup(req: Request, res: Response) {
-  const { name, email, password } = req.body;
+  const { name, email, password, role } = req.body;
 
   try {
-    const user = await validateUser(email, password, name);
+    const user = await validateUser(email, password, name, role);
     const hash = bcrypt.hashSync(password, constants.SALT_ROUNDS);
 
     await User.create({
       name: user.name,
       email: user.email,
       password: hash,
+      role: user.role,
     });
 
     return res.status(201).json({ message: "Signup successful" });
@@ -67,6 +69,7 @@ export async function signin(req: Request, res: Response) {
       id: userDb.dataValues.id,
       email: userDb.dataValues.email,
       name: userDb.dataValues.name,
+      role: userDb.dataValues.role,
       jti: v4(),
     };
 
@@ -106,7 +109,6 @@ export async function refresh(req: Request, res: Response) {
 
 export async function signout(req: Request, res: Response) {
   const redis = connectRedis.redis;
-
   redis.set(`jti:${req.JwtDecodedData.jti}`, req.JwtDecodedData.exp * 1000);
 
   return res.status(200).json({

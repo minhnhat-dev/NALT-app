@@ -30,6 +30,7 @@ export async function verifyTokenAcces(
       id: decoded.id,
       name: decoded.name,
       email: decoded.email,
+      role: decoded.role,
       jti: decoded.jti,
       iat: decoded.iat!,
       exp: decoded.exp!,
@@ -67,6 +68,7 @@ export async function verifyTokenRefesh(
       id: decoded.id,
       name: decoded.name,
       email: decoded.email,
+      role: decoded.role,
       jti: decoded.jti,
     };
     next();

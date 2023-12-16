@@ -18,20 +18,25 @@ class User {
   @IsOptional()
   name: string;
 
-  constructor(email: string, password: string, name: string) {
+  @IsOptional()
+  role: string;
+
+  constructor(email: string, password: string, name: string, role: string) {
     this.email = email;
     this.password = password;
     this.name = name;
+    this.role = role;
   }
 }
 
-export async function validateUser (
+export async function validateUser(
   email: string,
   password: string,
-  name: string = ""
+  name: string = "",
+  role: string = "user"
 ) {
   try {
-    const user = new User(email, password, name);
+    const user = new User(email, password, name, role);
     await validateOrReject(user);
     return user;
   } catch (error) {

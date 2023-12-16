@@ -2,6 +2,7 @@ export interface JwtData {
   id: string;
   name: string;
   email: string;
+  role: string;
   jti: string;
 }
 
