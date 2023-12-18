@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import constants from "./constants";
+import constants from "../../variable/constants";
 import { User } from "../users/models";
 import env from "../../config/env";
 import { validateUser } from "../../validators/validateUser";
