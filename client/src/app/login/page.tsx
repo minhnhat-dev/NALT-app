@@ -15,6 +15,7 @@ import axios, { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Styles from "./login.module.css";
+import useLogIn from "@/hooks/useLogIn";
 
 const { Title, Paragraph } = Typography;
 
@@ -24,36 +25,10 @@ const Login = ({}) => {
   const [changeError, setChangeError] = useState(false);
   const router = useRouter();
   const [api, contextHolder] = notification.useNotification();
+  const { fetchUser } = useLogIn(api, email, password);
 
   const handleSignIn = async () => {
-    try {
-      const response = await axios({
-        method: "post",
-        url: "https://nalt-server-test.onrender.com/api/auth/signin",
-        data: {
-          email: email,
-          password: password,
-        },
-      });
-      router.replace("/");
-      const userJson = JSON.stringify(response.data)
-      localStorage.setItem('user', userJson)
-      console.log(response.data);
-    } catch (error: any) {
-      console.log(error.response.data.data);
-      api.info({
-        message: "ERROR",
-        description: (
-          <>
-            {error.response.data.map((err: {}, index:number) => (
-              <p key={index}>{Object.values(err)}</p>
-            ))}
-          </>
-        ),
-        placement: "top",
-      });
-    }
-
+    fetchUser()
     setEmail((prev) => {
       return prev + email;
     });

@@ -1,9 +1,8 @@
-import axios, { AxiosError } from "axios";
+import axios from "axios";
 import { useRouter } from "next/navigation";
 
 const useSignUp = (api: any, username: string, email: string, password: string) => {
   const router = useRouter();
-
   const fetchData = async () => {
     try {
       const response = await axios({

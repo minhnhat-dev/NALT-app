@@ -1,23 +1,37 @@
-'use client'
+"use client";
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import Home from "../page";
+import axios from "axios";
+import { Select } from "antd";
+const { Option } = Select;
 
-function testPage() {
-  const router = useRouter();
-  const [isClient, setIsClient] = useState(false);
-
-  //client
+const  testPage = () => {
+  const [provinces, setProvinces] = useState([]);
   useEffect(() => {
-   localStorage.getItem('user') && setIsClient(true)
-  })
+    const callApi = async () => {
+      try {
+        const response = await axios({
+          method: "get",
+          url: "https://nalt-server-test.onrender.com/api/transactions",
+        });
+        console.log(response.data);
+        setProvinces(response.data);
+      } catch (error: any) {
+        console.log(error);
+      }
+    };
+    callApi();
+  }, [
 
-  //server
-  if (!isClient) {
-    return router.replace('/login')
-  }
-
-  return (<div><Home/></div>)
+  ]);
+  return (
+    <Select style={{width: '150px'}}>
+      {provinces.map((province:any) => (
+        <Option style={{width:'100%'}}>
+          {province}
+        </Option>
+      ))}
+    </Select>
+  );
 }
 
 export default testPage;

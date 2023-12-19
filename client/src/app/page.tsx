@@ -32,6 +32,7 @@ import StatisticalTables from "@/components/Statistics/StatisticalTables/Statist
 import axios from "axios";
 
 const { Header, Content, Sider } = Layout;
+
 const itemsMenu: MenuProps["items"] = [
   {
     key: "sub1",
@@ -110,18 +111,15 @@ const Home = () => {
   const [amount, setAmount] = React.useState(0);
   const [date, setDate] = React.useState(dayjs());
   const [catelogyId, setCatelogyId] = React.useState(items[0].id);
-
   const [isClient, setIsClient] = React.useState(false);
   const [user, setUser] = React.useState({ email: "" });
 
   const showModal = () => {
     setIsModalOpen(true);
   };
-
   const showModal2 = () => {
     setIsModal2Open(true);
   };
-
   const router = useRouter();
 
   const handleAddData = async (type: string) => {
@@ -143,14 +141,16 @@ const Home = () => {
     // }
   };
 
+  //sever
   useEffect(() => {
-    setIsClient(true);
-    if (isClient) {
+    if (!isClient) {
       router.replace("/login");
     }
   }, []);
 
+  //client
   useEffect(() => {
+    setIsClient(true)
     const userToken = localStorage.getItem("user");
     if (userToken) {
       const token = JSON.parse(userToken || "{}");
@@ -189,7 +189,7 @@ const Home = () => {
 
       <Layout>
         <Header className={Styles.header}>
-          <p className={Styles.title}>{user.email}</p>
+          <p className={Styles.title}>Welcome back {user.email}</p>
           <DatePicker defaultValue={dayjs()} format={dateFormat} />
         </Header>
 
@@ -287,7 +287,7 @@ const Home = () => {
             ]}
           >
             <Space direction="vertical">
-              <label>CATELOGY</label>
+              <label>CATEGORY</label>
               <Select size="large" style={{ width: "100%" }} value={catelogyId} onChange={(e: any) => setCatelogyId(e.target.value)}>
                 {items.map((item) => (
                   <Select.Option value={item.id}>
@@ -339,7 +339,7 @@ const Home = () => {
             ]}
           >
             <Space direction="vertical">
-              <label>CATALOGY</label>
+              <label>CATEGORY</label>
               <Select size="large" style={{ width: "100%" }}>
                 {items.map((item) => (
                   <Select.Option value={item.id}>
