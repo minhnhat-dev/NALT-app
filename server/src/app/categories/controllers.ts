@@ -3,7 +3,9 @@ import { Category } from "./models";
 import { validateCategory } from "../../validators/validateCategory";
 
 export async function categories(req: Request, res: Response) {
-  const categories = await Category.findAll();
+  const categories = await Category.findAll({
+    where: { userId: req.JwtDecodedData.id },
+  });
   return res.status(200).json({ categories: categories });
 }
 

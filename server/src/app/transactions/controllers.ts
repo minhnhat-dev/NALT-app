@@ -3,7 +3,11 @@ import { Transaction } from "./models";
 import { validateTransaction } from "../../validators/validateTransaction";
 
 export async function transactions(req: Request, res: Response) {
-  const transactions = await Transaction.findAll();
+  const transactions = await Transaction.findAll({
+    where: {
+      userId: req.JwtDecodedData.id,
+    },
+  });
   return res.status(200).json({ transactions: transactions });
 }
 

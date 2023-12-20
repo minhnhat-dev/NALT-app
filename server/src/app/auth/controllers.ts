@@ -3,11 +3,13 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import constants from "../../variable/constants";
 import { User } from "../users/models";
+import { Category } from "../categories/models";
 import env from "../../config/env";
 import { validateUser } from "../../validators/validateUser";
 import { v4 } from "uuid";
 import { JwtData } from "../../type/jwt.interface";
 import { connectRedis } from "../../database/Redis";
+import * as data from "../../data/sampleData";
 
 export async function me(req: Request, res: Response) {
   const user = {
@@ -25,15 +27,22 @@ export async function signup(req: Request, res: Response) {
   const { name, email, password, role } = req.body;
 
   try {
-    const user = await validateUser(email, password, name, role);
-    const hash = bcrypt.hashSync(password, constants.SALT_ROUNDS);
+    const userValidate = await validateUser(email, password, name, role);
+    const hash = bcrypt.hashSync(userValidate.password, constants.SALT_ROUNDS);
 
-    await User.create({
-      name: user.name,
-      email: user.email,
+    const user = await User.create({
+      name: userValidate.name,
+      email: userValidate.email,
       password: hash,
-      role: user.role,
+      role: userValidate.role,
     });
+
+    await Category.bulkCreate(
+      data.categoriesData.map((category) => ({
+        ...category,
+        userId: user.dataValues.id,
+      }))
+    );
 
     return res.status(201).json({ message: "Signup successful" });
   } catch (errors: any) {

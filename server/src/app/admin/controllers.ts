@@ -1,10 +1,13 @@
-import AdminBro from "admin-bro";
+import AdminBro, { AdminBroOptions } from "admin-bro";
 import AdminBroSequelize from "@admin-bro/sequelize";
 import * as views from "./views";
+import bcrypt from "bcrypt";
+import { User } from "../users/models";
+import { AuthenticationOptions } from "@admin-bro/express";
 
 AdminBro.registerAdapter(AdminBroSequelize);
 
-const AdminBroOptions = {
+const adminBroOptions: AdminBroOptions = {
   resources: [views.users, views.categories, views.transactions],
   branding: {
     companyName: "NALT",
@@ -12,6 +15,19 @@ const AdminBroOptions = {
   rootPath: "/admin",
 };
 
-const adminBro = new AdminBro(AdminBroOptions);
+export const adminBro = new AdminBro(adminBroOptions);
 
-export { adminBro };
+export const authenticationOptions: AuthenticationOptions = {
+  cookieName: "adminBro",
+  cookiePassword: "nalt",
+  authenticate: async (email: string, password: string) => {
+    const user = await User.findOne({ where: { email: email } });
+    if (user && user.dataValues.role !== "restrict") {
+      const matched = await bcrypt.compare(password, user.dataValues.password);
+      if (matched) {
+        return user;
+      }
+    }
+    return false;
+  },
+};

@@ -4,8 +4,19 @@ import { User } from "../users/models";
 import { Category } from "../categories/models";
 import { Transaction } from "../transactions/models";
 
-const canModifyUsers = ({ currentAdmin }: { currentAdmin: any }) =>
+const canModify = ({ currentAdmin }: { currentAdmin: any }) =>
   currentAdmin && currentAdmin.role === "admin";
+
+const canDeleteUser = ({
+  currentAdmin,
+  record,
+}: {
+  currentAdmin: any;
+  record: any;
+}) =>
+  currentAdmin &&
+  currentAdmin.role === "admin" &&
+  currentAdmin.id !== record.params.id;
 
 export const users = {
   resource: User,
@@ -23,39 +34,11 @@ export const users = {
           edit: true,
         },
       },
-      role: {
-        type: "string",
-        isVisible: {
-          show: true,
-          list: true,
-          filter: true,
-          edit: true,
-        },
-        actions: {
-          edit: false,
-        }
-       
-      },
     },
     actions: {
-      new: {
-        isAccessible: canModifyUsers,
-        before: async (request: any) => {
-          if (request.payload.password) {
-            request.payload = {
-              ...request.payload,
-              password: await bcrypt.hash(
-                request.payload.password,
-                constants.SALT_ROUNDS
-              ),
-            };
-          }
-          return request;
-        },
-      },
       show: { isAccessible: true },
-      edit: {
-        isAccessible: canModifyUsers,
+      new: {
+        isAccessible: canModify,
         before: async (request: any) => {
           if (request.payload.password) {
             request.payload = {
@@ -69,7 +52,26 @@ export const users = {
           return request;
         },
       },
-      delete: { isAccessible: canModifyUsers },
+      edit: {
+        isAccessible: canModify,
+        before: async (request: any, response: any) => {
+          if (
+            request.payload.password &&
+            request.payload.password !== response.record.params.password
+          ) {
+            request.payload = {
+              ...request.payload,
+              password: await bcrypt.hash(
+                request.payload.password,
+                constants.SALT_ROUNDS
+              ),
+            };
+          }
+          return request;
+        },
+      },
+      delete: { isAccessible: canDeleteUser },
+      bulkDelete: { isAccessible: canDeleteUser },
     },
   },
 };
@@ -80,6 +82,19 @@ export const categories = {
     navigation: {
       icon: "ChartNetwork",
     },
+    actions: {
+      show: { isAccessible: true },
+      new: {
+        isAccessible: canModify,
+      },
+      edit: {
+        isAccessible: canModify,
+      },
+      delete: {
+        isAccessible: canModify,
+      },
+      bulkDelete: { isAccessible: canModify },
+    },
   },
 };
 
@@ -88,6 +103,30 @@ export const transactions = {
   options: {
     navigation: {
       icon: "Account",
+    },
+    properties: {
+      description: {
+        type: "string",
+        isVisible: {
+          show: true,
+          list: false,
+          filter: false,
+          edit: true,
+        },
+      },
+    },
+    actions: {
+      show: { isAccessible: true },
+      new: {
+        isAccessible: canModify,
+      },
+      edit: {
+        isAccessible: canModify,
+      },
+      delete: {
+        isAccessible: canModify,
+      },
+      bulkDelete: { isAccessible: canModify },
     },
   },
 };
