@@ -8,7 +8,7 @@ export async function transactions(req: Request, res: Response) {
       userId: req.JwtDecodedData.id,
     },
   });
-  return res.status(200).json({ transactions: transactions });
+  return res.status(200).json({ transactions });
 }
 
 export async function transaction(req: Request, res: Response) {

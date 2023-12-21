@@ -19,7 +19,7 @@ export async function me(req: Request, res: Response) {
     role: req.JwtDecodedData.role,
   };
   return res.status(200).json({
-    user: user,
+    user,
   });
 }
 

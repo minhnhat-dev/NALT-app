@@ -6,7 +6,7 @@ export async function categories(req: Request, res: Response) {
   const categories = await Category.findAll({
     where: { userId: req.JwtDecodedData.id },
   });
-  return res.status(200).json({ categories: categories });
+  return res.status(200).json({ categories });
 }
 
 export async function category(req: Request, res: Response) {
