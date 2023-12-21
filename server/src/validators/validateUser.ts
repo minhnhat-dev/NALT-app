@@ -33,7 +33,7 @@ export async function validateUser(
   email: string,
   password: string,
   name: string = "",
-  role: string = "user"
+  role: string = "guest"
 ) {
   try {
     const user = new User(email, password, name, role);

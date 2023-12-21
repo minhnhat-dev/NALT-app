@@ -12,6 +12,16 @@ import { job } from "./tasks/clearTokenExpired";
 import { rootPath, routerAdmin } from "./app/admin/routes";
 import "./type";
 
+import { initializeApp, cert, ServiceAccount } from "firebase-admin/app";
+import serviceAccount from "./config/serviceAccount.json";
+
+initializeApp({
+  credential: cert(serviceAccount as ServiceAccount),
+  storageBucket: "gs://nalt-app.appspot.com",
+});
+
+// const bucket = 
+
 checkEnv();
 job.start();
 
