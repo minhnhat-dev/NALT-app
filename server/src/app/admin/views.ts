@@ -34,6 +34,15 @@ export const users = {
           edit: true,
         },
       },
+      avatar: {
+        type: "string",
+        isVisible: {
+          show: false,
+          list: false,
+          filter: false,
+          edit: true,
+        },
+      },
     },
     actions: {
       show: { isAccessible: true },
@@ -81,6 +90,17 @@ export const categories = {
   options: {
     navigation: {
       icon: "ChartNetwork",
+    },
+    properties: {
+      image: {
+        type: "string",
+        isVisible: {
+          show: false,
+          list: false,
+          filter: false,
+          edit: true,
+        },
+      }
     },
     actions: {
       show: { isAccessible: true },

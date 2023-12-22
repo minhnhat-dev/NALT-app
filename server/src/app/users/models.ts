@@ -32,6 +32,12 @@ const User = sequelize.define("user", {
     defaultValue: "guest",
     allowNull: false,
   },
+  avatar: {
+    type: DataTypes.TEXT,
+    validate: {
+      isUrl: true,
+    },
+  },
 });
 
 // User.sync({ force: true });

@@ -4,6 +4,7 @@ export const categoriesData: CategoriesData = [
   {
     name: "Upwork",
     type: "income",
+    image: "../public/images/upwork.svg"
   },
   {
     name: "Transfer",

@@ -21,6 +21,12 @@ const Category = sequelize.define("category", {
     defaultValue: "income",
     allowNull: false,
   },
+  image: {
+    type: DataTypes.TEXT,
+    validate: {
+      isUrl: true,
+    },
+  },
 });
 
 User.hasMany(Category);

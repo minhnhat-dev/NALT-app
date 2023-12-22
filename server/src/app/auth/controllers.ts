@@ -9,6 +9,7 @@ import { validateUser } from "../../validators/validateUser";
 import { v4 } from "uuid";
 import { JwtData } from "../../type/jwt.interface";
 import { connectRedis } from "../../database/Redis";
+import { getStorage } from "firebase-admin/storage";
 import * as data from "../../data/sampleData";
 
 export async function me(req: Request, res: Response) {
@@ -25,9 +26,29 @@ export async function me(req: Request, res: Response) {
 
 export async function signup(req: Request, res: Response) {
   const { name, email, password, role } = req.body;
+  const bucket = getStorage().bucket();
+  let avatar = null;
 
   try {
     const userValidate = await validateUser(email, password, name, role);
+
+    if (req.file) {
+      const file = bucket.file(`users/${req.file.originalname}`);
+
+      await file.save(req.file.buffer, {
+        metadata: {
+          contentType: req.file.mimetype,
+        },
+      });
+
+      const [url] = await file.getSignedUrl({
+        action: "read",
+        expires: Date.now() + 1000 * 60 * 60 * 24 * 365,
+      });
+
+      avatar = url;
+    }
+
     const hash = bcrypt.hashSync(userValidate.password, constants.SALT_ROUNDS);
 
     const user = await User.create({
@@ -35,14 +56,15 @@ export async function signup(req: Request, res: Response) {
       email: userValidate.email,
       password: hash,
       role: userValidate.role,
+      avatar,
     });
 
-    await Category.bulkCreate(
-      data.categoriesData.map((category) => ({
-        ...category,
-        userId: user.dataValues.id,
-      }))
-    );
+    // await Category.bulkCreate(
+    //   data.categoriesData.map((category) => ({
+    //     ...category,
+    //     userId: user.dataValues.id,
+    //   }))
+    // );
 
     return res.status(201).json({ message: "Signup successful" });
   } catch (errors: any) {
