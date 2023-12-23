@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
-import { getStorage } from "firebase-admin/storage";
 import { Category } from "./models";
 import { validateCategory } from "../../validators/validateCategory";
+import { uploadImage } from "../../utils/upload";
 
 export async function categories(req: Request, res: Response) {
   const categories = await Category.findAll({
@@ -12,27 +12,9 @@ export async function categories(req: Request, res: Response) {
 
 export async function category(req: Request, res: Response) {
   const { name, type } = req.body;
-  let image = null;
-  const bucket = getStorage().bucket();
-
   try {
     const category = await validateCategory(name, type);
-    if (req.file) {
-      const file = bucket.file(`categories/${req.file.originalname}`);
-
-      await file.save(req.file.buffer, {
-        metadata: {
-          contentType: req.file.mimetype,
-        },
-      });
-
-      const [url] = await file.getSignedUrl({
-        action: "read",
-        expires: Date.now() + 1000 * 60 * 60 * 24 * 365,
-      });
-
-      image = url;
-    }
+    const image = req.file ? await uploadImage(req.file, "categories") : null;
 
     await Category.create({
       name: category.name,
