@@ -32,7 +32,6 @@ const useLogIn = (api: any, email: string, password: string) => {
       });
     }
   };
-
   return { fetchUser };
 };
 

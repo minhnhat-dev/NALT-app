@@ -111,7 +111,7 @@ const Home = () => {
   const [amount, setAmount] = React.useState(0);
   const [date, setDate] = React.useState(dayjs());
   const [catelogyId, setCatelogyId] = React.useState(items[0].id);
-  const [isClient, setIsClient] = React.useState(false);
+  const [isClient, setIsClient] = React.useState(true);
   const [user, setUser] = React.useState({ email: "" });
 
   const showModal = () => {
@@ -123,34 +123,17 @@ const Home = () => {
   const router = useRouter();
 
   const handleAddData = async (type: string) => {
-    console.log(catelogyId, amount, date)
-    // try {
-    //   const response = await axios({
-    //     method: "post",
-    //     url: "https://nalt-server-test.onrender.com/api/transections",
-    //     data: {
-    //       catelogyId: catelogyId,
-    //       amount: amount,
-    //       date: date,
-    //       type: type
-    //     },
-    //   });
-    //   console.log(response.data);
-    // } catch (error) {
-    //   console.log(error);
-    // }
+    console.log(catelogyId, amount, date);
   };
 
-  //sever
   useEffect(() => {
-    if (!isClient) {
+    setIsClient(true)
+    if (isClient && !localStorage.getItem("user")) {
       router.replace("/login");
     }
   }, []);
 
-  //client
   useEffect(() => {
-    setIsClient(true)
     const userToken = localStorage.getItem("user");
     if (userToken) {
       const token = JSON.parse(userToken || "{}");
@@ -281,14 +264,22 @@ const Home = () => {
             onCancel={() => setIsModal2Open(false)}
             width={"fix-content"}
             footer={[
-              <Button style={{ width: "100%" }} onClick={() => handleAddData("income")}>
+              <Button
+                style={{ width: "100%" }}
+                onClick={() => handleAddData("income")}
+              >
                 Add
               </Button>,
             ]}
           >
             <Space direction="vertical">
               <label>CATEGORY</label>
-              <Select size="large" style={{ width: "100%" }} value={catelogyId} onChange={(e: any) => setCatelogyId(e.target.value)}>
+              <Select
+                size="large"
+                style={{ width: "100%" }}
+                value={catelogyId}
+                onChange={(e: any) => setCatelogyId(e.target.value)}
+              >
                 {items.map((item) => (
                   <Select.Option value={item.id}>
                     <Space direction="horizontal">
@@ -333,7 +324,10 @@ const Home = () => {
             onCancel={() => setIsModalOpen(false)}
             width={"fix-content"}
             footer={[
-              <Button style={{ width: "100%" }} onClick={() => handleAddData("expense")}>
+              <Button
+                style={{ width: "100%" }}
+                onClick={() => handleAddData("expense")}
+              >
                 Add
               </Button>,
             ]}

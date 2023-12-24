@@ -23,7 +23,6 @@ const Login = ({}) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [changeError, setChangeError] = useState(false);
-  const router = useRouter();
   const [api, contextHolder] = notification.useNotification();
   const { fetchUser } = useLogIn(api, email, password);
 
