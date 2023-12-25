@@ -6,7 +6,7 @@
   "scripts": {
     "start": "npm run build && node dist/main.js",
     "dev": "nodemon",
-    "build": "npx tsc && cp -r public dist/"
+    "build": "npx tsc"
   },
   "keywords": [],
   "author": "ryu",
