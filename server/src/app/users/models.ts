@@ -32,7 +32,7 @@ const User = sequelize.define("user", {
     defaultValue: "guest",
     allowNull: false,
   },
-  avatar: {
+  image: {
     type: DataTypes.TEXT,
     validate: {
       isUrl: true,

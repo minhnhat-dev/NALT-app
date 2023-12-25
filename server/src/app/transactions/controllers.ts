@@ -19,7 +19,8 @@ export async function transaction(req: Request, res: Response) {
       type,
       amount,
       date,
-      description
+      description,
+      categoryId
     );
     await Transaction.create({
       type: transaction.type,
@@ -27,7 +28,7 @@ export async function transaction(req: Request, res: Response) {
       date: transaction.date,
       description: transaction.description,
       userId: req.JwtDecodedData.id,
-      categoryId: categoryId,
+      categoryId: transaction.categoryId,
     });
 
     return res.status(201).json({ message: "Transaction create successful" });

@@ -10,7 +10,7 @@ import transactions from "./app/transactions/routes";
 import categories from "./app/categories/routes";
 import { job } from "./tasks/clearTokenExpired";
 import { rootPath, routerAdmin } from "./app/admin/routes";
-import "./type";
+import "./types";
 import "./database/Firebase";
 
 checkEnv();

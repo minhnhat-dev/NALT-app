@@ -2,9 +2,9 @@ import {
   IsEmail,
   IsNotEmpty,
   IsStrongPassword,
-  IsOptional,
   validateOrReject,
 } from "class-validator";
+import { UserRole } from "../types/user.interface";
 
 class User {
   @IsNotEmpty()
@@ -15,13 +15,13 @@ class User {
   @IsStrongPassword()
   password: string;
 
-  @IsOptional()
+  @IsNotEmpty()
   name: string;
 
-  @IsOptional()
-  role: string;
+  @IsNotEmpty()
+  role: UserRole;
 
-  constructor(email: string, password: string, name: string, role: string) {
+  constructor(email: string, password: string, name: string, role: UserRole) {
     this.email = email;
     this.password = password;
     this.name = name;
@@ -33,7 +33,7 @@ export async function validateUser(
   email: string,
   password: string,
   name: string = "",
-  role: string = "guest"
+  role: UserRole = UserRole.guest
 ) {
   try {
     const user = new User(email, password, name, role);

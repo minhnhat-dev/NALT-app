@@ -1,7 +1,8 @@
 import { Request, Response } from "express";
 import { Category } from "./models";
 import { validateCategory } from "../../validators/validateCategory";
-import { uploadImage } from "../../utils/upload";
+import { uploadImageByBuffer } from "../../utils/upload";
+import { CategoryData } from "../../types/category.interface";
 
 export async function categories(req: Request, res: Response) {
   const categories = await Category.findAll({
@@ -13,8 +14,10 @@ export async function categories(req: Request, res: Response) {
 export async function category(req: Request, res: Response) {
   const { name, type } = req.body;
   try {
-    const category = await validateCategory(name, type);
-    const image = req.file ? await uploadImage(req.file, "categories") : null;
+    const category: CategoryData = await validateCategory(name, type);
+    const image = req.file
+      ? await uploadImageByBuffer(req.file, "categories")
+      : null;
 
     await Category.create({
       name: category.name,

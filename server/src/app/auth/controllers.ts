@@ -7,9 +7,10 @@ import { Category } from "../categories/models";
 import env from "../../config/env";
 import { validateUser } from "../../validators/validateUser";
 import { v4 } from "uuid";
-import { JwtData } from "../../type/jwt.interface";
+import { JwtData } from "../../types/jwt.interface";
+import { CategoryData } from "../../types/category.interface";
 import { connectRedis } from "../../database/Redis";
-import { uploadImage } from "../../utils/upload";
+import { uploadImageByBuffer, uploadImageByPath } from "../../utils/upload";
 import * as data from "../../data/sampleData";
 
 export async function me(req: Request, res: Response) {
@@ -29,23 +30,30 @@ export async function signup(req: Request, res: Response) {
 
   try {
     const userValidate = await validateUser(email, password, name, role);
-    const avatar = req.file ? await uploadImage(req.file, "users") : null;
-    const hash = await bcrypt.hash(userValidate.password, constants.SALT_ROUNDS);
+    const image = req.file
+      ? await uploadImageByBuffer(req.file, "users")
+      : null;
+    const hash = await bcrypt.hash(
+      userValidate.password,
+      constants.SALT_ROUNDS
+    );
 
     const user = await User.create({
       name: userValidate.name,
       email: userValidate.email,
       password: hash,
       role: userValidate.role,
-      avatar,
+      image,
     });
 
     await Category.bulkCreate(
-      data.categoriesData.map((category) => ({
-        ...category,
-        userId: user.dataValues.id,
-        image: `${req.get("host")}/${category.image}`,
-      }))
+      await Promise.all(
+        data.categoriesData.map(async (category) => ({
+          ...category,
+          userId: user.dataValues.id,
+          image: await uploadImageByPath(category.image!, "categories"),
+        }))
+      )
     );
 
     return res.status(201).json({ message: "Signup successful" });

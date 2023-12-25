@@ -1,19 +1,32 @@
-import { getStorage } from "firebase-admin/storage";
+import { getStorage, getDownloadURL } from "firebase-admin/storage";
+import mime from "mime-types";
+import path from "path";
+import fs from "fs";
 
-export async function uploadImage(file: any, destination: string) {
+export async function uploadImageByBuffer(file: any, destination: string) {
   const bucket = getStorage().bucket();
-  const bucketFile = bucket.file(`${destination}/${file.originalname}`);
+  const fileRef = bucket.file(`${destination}/${file.originalname}`);
 
-  await bucketFile.save(file.buffer, {
+  await fileRef.save(file.buffer, {
     metadata: {
       contentType: file.mimetype,
     },
   });
 
-  const [url] = await bucketFile.getSignedUrl({
-    action: "read",
-    expires: Date.now() + 1000 * 60 * 60 * 24 * 365,
+  const downloadURL = await getDownloadURL(fileRef);
+  return downloadURL;
+}
+
+export async function uploadImageByPath(filePath: string, destination: string) {
+  const bucket = getStorage().bucket();
+  const fileRef = bucket.file(`${destination}/${path.basename(filePath)}`);
+
+  await fileRef.save(fs.readFileSync(path.resolve("public", filePath)), {
+    metadata: {
+      contentType: mime.lookup(filePath) || "image/png",
+    },
   });
 
-  return url;
+  const downloadURL = await getDownloadURL(fileRef);
+  return downloadURL;
 }

@@ -34,7 +34,7 @@ export const users = {
           edit: true,
         },
       },
-      avatar: {
+      image: {
         type: "string",
         isVisible: {
           show: false,
