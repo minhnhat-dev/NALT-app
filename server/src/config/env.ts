@@ -8,4 +8,5 @@ export default {
   hostRedis: process.env.HOST_REDIS!,
   usernameRedis: process.env.USERNAME_REDIS || "default",
   passwordRedis: process.env.PASSWORD_REDIS!,
+  storageBucket: process.env.STORAGE_BUCKET!
 };
