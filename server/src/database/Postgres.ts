@@ -1,11 +1,12 @@
 import { Sequelize } from "sequelize";
+import env from "../config/env";
 
 class Connect {
   private static instance: Connect;
   public sequelize: Sequelize;
 
   private constructor() {
-    this.sequelize = new Sequelize(process.env.DATABASE_URL as string, {
+    this.sequelize = new Sequelize(env.databaseUrl, {
       dialect: "postgres",
       dialectOptions: { ssl: true },
     });
@@ -23,4 +24,4 @@ class Connect {
   }
 }
 
-export default Connect.Instance;
+export const connectPostgres = Connect.Instance;

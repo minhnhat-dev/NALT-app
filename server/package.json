@@ -1,31 +1,50 @@
 {
   "name": "server",
   "version": "1.0.0",
-  "description": "",
-  "main": "app.js",
+  "description": "nalt server",
+  "main": "src/main.ts",
   "scripts": {
-    "start": "npm run build && node dist/app.js",
-    "dev": "nodemon src/app.ts",
-    "build": "npx tsc"
+    "start": "npm run build && node dist/main.js",
+    "dev": "nodemon",
+    "build": "npx tsc && cp -r src/public dist/"
   },
   "keywords": [],
-  "author": "",
+  "author": "ryu",
   "license": "ISC",
   "devDependencies": {
     "@types/bcrypt": "^5.0.1",
+    "@types/cors": "^2.8.16",
     "@types/express": "^4.17.19",
+    "@types/jsonwebtoken": "^9.0.4",
+    "@types/mime-types": "^2.1.4",
+    "@types/multer": "^1.4.11",
     "@types/node": "^20.8.6",
+    "@types/uuid": "^9.0.7",
     "nodemon": "^3.0.1",
     "ts-node": "^10.9.1",
     "typescript": "^5.2.2"
   },
   "dependencies": {
-    "@types/multer": "^1.4.9",
+    "@admin-bro/express": "^3.1.0",
+    "@admin-bro/sequelize": "^1.2.1",
+    "admin-bro": "^4.0.1",
     "bcrypt": "^5.1.1",
+    "class-validator": "^0.14.0",
+    "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
+    "cron": "^3.1.6",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
+    "express-formidable": "^1.2.0",
+    "express-session": "^1.17.3",
+    "firebase-admin": "^12.0.0",
+    "ioredis": "^5.3.2",
+    "jsonwebtoken": "^9.0.2",
+    "mime-types": "^2.1.35",
     "multer": "^1.4.5-lts.1",
     "pg": "^8.11.3",
-    "sequelize": "^6.33.0"
+    "sequelize": "^6.33.0",
+    "tslib": "^2.6.2",
+    "uuid": "^9.0.1"
   }
 }
