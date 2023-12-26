@@ -21,11 +21,14 @@ export async function uploadImageByPath(filePath: string, destination: string) {
   const bucket = getStorage().bucket();
   const fileRef = bucket.file(`${destination}/${path.basename(filePath)}`);
 
-  await fileRef.save(fs.readFileSync(path.resolve("public", filePath)), {
-    metadata: {
-      contentType: mime.lookup(filePath) || "image/png",
-    },
-  });
+  await fileRef.save(
+    fs.readFileSync(path.join(__dirname, "../public/images", filePath)),
+    {
+      metadata: {
+        contentType: mime.lookup(filePath) || "image/png",
+      },
+    }
+  );
 
   const downloadURL = await getDownloadURL(fileRef);
   return downloadURL;

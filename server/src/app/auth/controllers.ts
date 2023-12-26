@@ -8,7 +8,6 @@ import env from "../../config/env";
 import { validateUser } from "../../validators/validateUser";
 import { v4 } from "uuid";
 import { JwtData } from "../../types/jwt.interface";
-import { CategoryData } from "../../types/category.interface";
 import { connectRedis } from "../../database/Redis";
 import { uploadImageByBuffer, uploadImageByPath } from "../../utils/upload";
 import * as data from "../../data/sampleData";

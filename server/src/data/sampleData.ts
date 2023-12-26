@@ -4,41 +4,41 @@ export const categoriesData: CategoriesData = [
   {
     name: "Upwork",
     type: CategoryType.income,
-    image: "images/upwork.svg"
+    image: "upwork.svg",
   },
   {
     name: "Transfer",
     type: CategoryType.expense,
-    image: "images/transfer.svg"
+    image: "transfer.svg",
   },
   {
     name: "Paypal",
     type: CategoryType.income,
-    image: "images/paypal.svg"
+    image: "paypal.svg",
   },
   {
     name: "Youtube",
     type: CategoryType.expense,
-    image: "images/youtube.svg"
+    image: "youtube.svg",
   },
   {
     name: "Starbucks",
     type: CategoryType.expense,
-    image: "images/starbucks.svg"
+    image: "starbucks.svg",
   },
   {
     name: "Spotify",
     type: CategoryType.expense,
-    image: "images/spotify.svg"
+    image: "spotify.svg",
   },
   {
     name: "Electricity",
     type: CategoryType.expense,
-    image: "images/electricity.svg"
+    image: "electricity.svg",
   },
   {
     name: "House Rent",
     type: CategoryType.income,
-    image: "images/houseRent.svg"
+    image: "houseRent.svg",
   },
 ];
