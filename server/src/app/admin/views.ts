@@ -3,9 +3,10 @@ import constants from "../../variable/constants";
 import { User } from "../users/models";
 import { Category } from "../categories/models";
 import { Transaction } from "../transactions/models";
+import { UserRole } from "../../types/user.interface";
 
 const canModify = ({ currentAdmin }: { currentAdmin: any }) =>
-  currentAdmin && currentAdmin.role === "admin";
+  currentAdmin && currentAdmin.role === UserRole.admin;
 
 const canDeleteUser = ({
   currentAdmin,
@@ -15,7 +16,7 @@ const canDeleteUser = ({
   record: any;
 }) =>
   currentAdmin &&
-  currentAdmin.role === "admin" &&
+  currentAdmin.role === UserRole.admin &&
   currentAdmin.id !== record.params.id;
 
 export const users = {
@@ -35,6 +36,15 @@ export const users = {
         },
       },
       image: {
+        type: "string",
+        isVisible: {
+          show: false,
+          list: false,
+          filter: false,
+          edit: true,
+        },
+      },
+      money: {
         type: "string",
         isVisible: {
           show: false,
@@ -100,7 +110,7 @@ export const categories = {
           filter: false,
           edit: true,
         },
-      }
+      },
     },
     actions: {
       show: { isAccessible: true },

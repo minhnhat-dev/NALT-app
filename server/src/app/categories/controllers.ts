@@ -14,17 +14,20 @@ export async function categories(req: Request, res: Response) {
 export async function category(req: Request, res: Response) {
   const { name, type } = req.body;
   try {
-    const category: CategoryData = await validateCategory(name, type);
-    const image = req.file
-      ? await uploadImageByBuffer(req.file, "categories")
-      : null;
+    const categoryValidate: CategoryData = await validateCategory(name, type);
 
-    await Category.create({
-      name: category.name,
-      type: category.type,
+    const categoryDb = await Category.create({
+      name: categoryValidate.name,
+      type: categoryValidate.type,
       userId: req.JwtDecodedData.id,
-      image,
+      image: null,
     });
+
+    categoryDb.set({
+      image: req.file && (await uploadImageByBuffer(req.file, "categories")),
+    });
+
+    await categoryDb.save();
 
     return res.status(201).json({ message: "Category create successful" });
   } catch (errors: any) {

@@ -14,6 +14,7 @@ const User = sequelize.define("user", {
   },
   name: {
     type: DataTypes.STRING,
+    allowNull: false,
   },
   email: {
     type: DataTypes.STRING,
@@ -36,6 +37,14 @@ const User = sequelize.define("user", {
     type: DataTypes.TEXT,
     validate: {
       isUrl: true,
+    },
+  },
+  money: {
+    type: DataTypes.DECIMAL,
+    allowNull: false,
+    defaultValue: 0,
+    validate: {
+      isNumeric: true,
     },
   },
 });

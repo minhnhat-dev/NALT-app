@@ -11,6 +11,7 @@ import { JwtData } from "../../types/jwt.interface";
 import { connectRedis } from "../../database/Redis";
 import { uploadImageByBuffer, uploadImageByPath } from "../../utils/upload";
 import * as data from "../../data/sampleData";
+import { UserData } from "../../types/user.interface";
 
 export async function me(req: Request, res: Response) {
   const user = {
@@ -28,28 +29,32 @@ export async function signup(req: Request, res: Response) {
   const { name, email, password, role } = req.body;
 
   try {
-    const userValidate = await validateUser(email, password, name, role);
-    const image = req.file
-      ? await uploadImageByBuffer(req.file, "users")
-      : null;
-    const hash = await bcrypt.hash(
-      userValidate.password,
-      constants.SALT_ROUNDS
+    const userValidate: UserData = await validateUser(
+      email,
+      password,
+      name,
+      role
     );
 
-    const user = await User.create({
+    const userDb = await User.create({
       name: userValidate.name,
       email: userValidate.email,
-      password: hash,
+      password: await bcrypt.hash(userValidate.password, constants.SALT_ROUNDS),
       role: userValidate.role,
-      image,
+      image: null,
     });
+
+    userDb.set({
+      image: req.file && (await uploadImageByBuffer(req.file, "users")),
+    });
+
+    await userDb.save();
 
     await Category.bulkCreate(
       await Promise.all(
         data.categoriesData.map(async (category) => ({
           ...category,
-          userId: user.dataValues.id,
+          userId: userDb.dataValues.id,
           image: await uploadImageByPath(category.image!, "categories"),
         }))
       )
@@ -74,8 +79,8 @@ export async function signup(req: Request, res: Response) {
 export async function signin(req: Request, res: Response) {
   const { email, password } = req.body;
   try {
-    const user = await validateUser(email, password);
-    const userDb = await User.findOne({ where: { email: user.email } });
+    const userValidate = await validateUser(email, password);
+    const userDb = await User.findOne({ where: { email: userValidate.email } });
     if (!userDb) {
       return res.status(401).json([{ error: "Password or Email invalid" }]);
     }

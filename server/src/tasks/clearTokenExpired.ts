@@ -4,7 +4,7 @@ import { connectRedis } from "../database/Redis";
 const redis = connectRedis.redis;
 
 export const job = CronJob.from({
-  cronTime: "0 1 * * * *",
+  cronTime: "0 * * * * *",
   onTick: () => {
     try {
       const stream = redis.scanStream();
